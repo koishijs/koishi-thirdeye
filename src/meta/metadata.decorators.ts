@@ -5,6 +5,7 @@ import {
   MetadataGenericMap,
   MetadataKey,
 } from '../def';
+import 'reflect-metadata';
 
 export type AllDecorators = MethodDecorator &
   ClassDecorator &

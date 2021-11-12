@@ -4,6 +4,7 @@ import {
   MetadataGenericMap,
   MetadataMapValue,
 } from '../def';
+import 'reflect-metadata';
 
 export function getMetadata<K extends keyof MetadataGenericMap>(
   metadataKey: K,

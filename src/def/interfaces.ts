@@ -163,25 +163,3 @@ export type MetadataMapValue<
   : K extends keyof MetadataMap
   ? MetadataMap[K]
   : never;
-
-// command interceptor
-
-export interface KoishiCommandInterceptor<
-  U extends User.Field = never,
-  G extends Channel.Field = never,
-  A extends any[] = any[],
-  O extends {} = {}
-> {
-  intercept: Command.Action<U, G, A, O>;
-}
-
-export type KoishiCommandInterceptorRegistration<
-  U extends User.Field = never,
-  G extends Channel.Field = never,
-  A extends any[] = any[],
-  O extends {} = {}
-> =
-  | KoishiCommandInterceptor<U, G, A, O>
-  | Type<KoishiCommandInterceptor<U, G, A, O>>
-  | string
-  | symbol;
