@@ -7,7 +7,8 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"declaration": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"skipLibCheck": true
 	},
 	"compileOnSave": true,
 	"allowJs": true,
