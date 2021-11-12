@@ -208,7 +208,7 @@ export function KoishiPlugin<T = any>(
             }
             break;
           case 'plugin':
-            const pluginDesc: KoishiModulePlugin<any> = await this[methodKey];
+            const pluginDesc: KoishiModulePlugin<any> = await this[methodKey]();
             if (!pluginDesc || !pluginDesc.plugin) {
               throw new Error(`Invalid plugin from method ${methodKey}.`);
             }
