@@ -44,7 +44,7 @@
     "koishi": "^4.0.0-beta.0"
   },
   "dependencies": {
-    "koishi-thirdeye": "^1.1.9",
+    "koishi-utils-schemagen": "^1.1.9",
     "reflect-metadata": "^0.1.13"
   }
 }
