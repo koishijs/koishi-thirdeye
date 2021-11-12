@@ -42,6 +42,14 @@ export interface OnDisconnect {
   onDisconnect(): void | Promise<void>;
 }
 
+function getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
+  let targetCtx = ctx;
+  for (const fun of filters) {
+    targetCtx = fun(targetCtx) || targetCtx;
+  }
+  return targetCtx;
+}
+
 export function KoishiPlugin<T = any>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
@@ -50,14 +58,6 @@ export function KoishiPlugin<T = any>(
       __ctx: Context;
       __config: T;
       __rawConfig: T;
-
-      _getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
-        let targetCtx = ctx;
-        for (const fun of filters) {
-          targetCtx = fun(targetCtx) || targetCtx;
-        }
-        return targetCtx;
-      }
 
       _handleSystemInjections() {
         // console.log('Handling system injection');
@@ -176,7 +176,7 @@ export function KoishiPlugin<T = any>(
           return;
         }
         // console.log(`Type: ${regData.type}`);
-        const baseContext = this._getContextFromFilters(
+        const baseContext = getContextFromFilters(
           this.__ctx,
           getMetadataArray(KoishiOnContextScope, this, methodKey),
         );
@@ -294,18 +294,7 @@ export function KoishiPlugin<T = any>(
         });
       }
 
-      async _initializePluginClass(ctx: Context) {
-        const contextFilters = getMetadataArray(
-          KoishiOnContextScope,
-          originalClass,
-        );
-        this.__ctx = this._getContextFromFilters(ctx, contextFilters);
-        this.__config =
-          typeof options.schema === 'function'
-            ? schemaTransform(options.schema, this.__rawConfig)
-            : options.schema
-            ? Schema.validate(this.__rawConfig, options.schema)
-            : this.__rawConfig;
+      async _initializePluginClass() {
         this._handleSystemInjections();
         this._handleServiceInjections();
         this._registerAfterInit();
@@ -316,10 +305,24 @@ export function KoishiPlugin<T = any>(
       }
 
       constructor(...args: any[]) {
-        super(...args);
-        const ctx: Context = args[0];
-        this.__rawConfig = args[1];
-        this._initializePluginClass(ctx).then();
+        const originalCtx: Context = args[0];
+        const rawConfig = args[1];
+        const contextFilters = getMetadataArray(
+          KoishiOnContextScope,
+          originalClass,
+        );
+        const ctx = getContextFromFilters(originalCtx, contextFilters);
+        const config =
+          typeof options.schema === 'function'
+            ? schemaTransform(options.schema, rawConfig)
+            : options.schema
+            ? Schema.validate(rawConfig, options.schema)
+            : rawConfig;
+        super(ctx, config, ...args.slice(2));
+        this.__ctx = ctx;
+        this.__rawConfig = rawConfig;
+        this.__config = config;
+        this._initializePluginClass().then();
       }
     };
     if (options.name) {
