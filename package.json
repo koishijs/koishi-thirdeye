@@ -1,21 +1,29 @@
 {
   "name": "koishi-thirdeye",
   "version": "1.0.0",
-  "description": "DI plugin framework for Koishi v4 beta",
+  "description": "装饰器形式的 Koishi 插件开发框架",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
+    "lint": "eslint --fix .",
     "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "https://code.mycard.moe/3rdeye/koishi-thirdeye"
+    "url": "https://code.mycard.moe/3rdeye/koishi-thirdeye.git"
   },
+  "bugs": {
+    "url": "https://code.mycard.moe/3rdeye/koishi-thirdeye/issues"
+  },
+  "homepage": "https://code.mycard.moe/3rdeye/koishi-thirdeye",
   "keywords": [
-    "Koishi",
+    "Koishi.js",
+    "koishi",
     "qqbot",
-    "cqbot",
     "cqhttp",
-    "onebot"
+    "cqbot",
+    "koishijs",
+    "utils-schema"
   ],
   "author": "Nanahira <nanahira@momobako.com>",
   "license": "MIT",
@@ -36,7 +44,7 @@
     "koishi": "^4.0.0-beta.0"
   },
   "dependencies": {
-    "koishi-utils-schemagen": "^1.1.9",
+    "koishi-thirdeye": "^1.1.9",
     "reflect-metadata": "^0.1.13"
   }
 }
