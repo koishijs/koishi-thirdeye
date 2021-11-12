@@ -208,16 +208,16 @@ import { Provide } from 'koishi-thirdeye';
 declare module 'koishi' {
   namespace Context {
     interface Services {
-      testProvide: TestProvideService;
+      myService: MyDatabasePlugin;
     }
   }
 }
 
 
 // `@Provide(name)` 装饰器会自动完成 `Context.service(name)` 的声明操作
-@Injectable()
-@Provide('testProvide')
-export class TestProvideService {
+@Provide('myService')
+@KoishiPlugin({ name: 'my-database' })
+export class MyDatabasePlugin {
   // 该类会作为 Koishi 的 Service 供其他 Koishi 插件进行引用
 }
 ```
