@@ -2,6 +2,7 @@ import {
   CommandDefinitionFun,
   CommandPutConfig,
   CommandPutConfigMap,
+  DoRegisterConfig,
   EventName,
   GenerateMappingStruct,
   KoishiCommandDefinition,
@@ -14,25 +15,18 @@ import {
   KoishiServiceProvideSym,
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
-  MetadataGenericMap,
+  MetadataMap,
   OnContextFunction,
   Selection,
 } from './def';
 import 'reflect-metadata';
 import { App, Argv, Command, Context, FieldCollector, Session } from 'koishi';
-import {
-  AppendMetadata,
-  AppendMetadataUnique,
-  ConcatMetadata,
-  SetMetadata,
-} from './meta/metadata.decorators';
 import { PluginClass } from './register';
+import { Metadata } from './meta/metadata.decorators';
 
 // Register methods
-export const DoRegister = (
-  value: MetadataGenericMap['KoishiDoRegister'],
-): MethodDecorator =>
-  SetMetadata(KoishiDoRegister, value, KoishiDoRegisterKeys);
+export const DoRegister = (value: DoRegisterConfig): MethodDecorator =>
+  Metadata.set(KoishiDoRegister, value, KoishiDoRegisterKeys);
 
 export const UseMiddleware = (prepend?: boolean): MethodDecorator =>
   DoRegister(GenerateMappingStruct('middleware', prepend));
@@ -78,7 +72,7 @@ export function UseCommand(
 export const OnContext = (
   ctxFun: OnContextFunction,
 ): MethodDecorator & ClassDecorator =>
-  AppendMetadata(KoishiOnContextScope, ctxFun);
+  Metadata.append(KoishiOnContextScope, ctxFun);
 
 export const OnUser = (...values: string[]) =>
   OnContext((ctx) => ctx.user(...values));
@@ -104,7 +98,7 @@ export const OnSelection = (selection: Selection) =>
 // Command definition
 
 export const CommandDef = (def: CommandDefinitionFun): MethodDecorator =>
-  AppendMetadata(KoishiCommandDefinition, def);
+  Metadata.append(KoishiCommandDefinition, def);
 
 export const CommandDescription = (desc: string) =>
   CommandDef((cmd) => {
@@ -197,7 +191,7 @@ export function Inject(name?: keyof Context.Services): PropertyDecorator {
       }
     }
     const serviceName = name || (key as keyof Context.Services);
-    const dec = SetMetadata(
+    const dec = Metadata.set(
       KoishiServiceInjectSym,
       serviceName,
       KoishiServiceInjectSymKeys,
@@ -211,11 +205,11 @@ export function Provide(
   options?: Context.Options,
 ): ClassDecorator {
   Context.service(name, options);
-  return AppendMetadataUnique(KoishiServiceProvideSym, name);
+  return Metadata.appendUnique(KoishiServiceProvideSym, name);
 }
 
 const InjectSystem = (fun: (obj: PluginClass) => any) =>
-  SetMetadata(KoishiSystemInjectSym, fun, KoishiSystemInjectSymKeys);
+  Metadata.set(KoishiSystemInjectSym, fun, KoishiSystemInjectSymKeys);
 
 export const InjectContext = (select?: Selection) =>
   InjectSystem((obj) => {

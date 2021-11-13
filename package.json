@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "koishi-utils-schemagen": "^1.1.9",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "typed-reflector": "^1.0.2"
   }
 }

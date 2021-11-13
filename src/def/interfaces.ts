@@ -142,24 +142,3 @@ export type CommandPutConfig<
 > = MappingStruct<CommandPutConfigMap, K>;
 
 export type CommandDefinitionFun = (cmd: Command) => Command;
-
-// metadata map
-export type MetadataArrayValueMap = {
-  [K in keyof MetadataArrayMap]: MetadataArrayMap[K][];
-};
-
-export type MetadataGenericMap = MetadataArrayValueMap & MetadataMap;
-
-export type MetadataArrayValue<
-  K extends keyof MetadataArrayValueMap
-> = MetadataArrayValueMap[K];
-
-export type MetadataKey = keyof MetadataArrayMap | keyof MetadataMap;
-
-export type MetadataMapValue<
-  K extends MetadataKey
-> = K extends keyof MetadataArrayValueMap
-  ? MetadataArrayValue<K>
-  : K extends keyof MetadataMap
-  ? MetadataMap[K]
-  : never;

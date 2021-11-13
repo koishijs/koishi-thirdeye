@@ -16,7 +16,7 @@ import {
   Type,
 } from './def';
 import { schemaFromClass, schemaTransform } from 'koishi-utils-schemagen';
-import { getMetadata, getMetadataArray } from './meta/meta-fetch';
+import { reflector } from './meta/meta-fetch';
 import { applySelector } from './utility/utility';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
@@ -61,10 +61,10 @@ export function KoishiPlugin<T = any>(
 
       _handleSystemInjections() {
         // console.log('Handling system injection');
-        const injectKeys = getMetadataArray(KoishiSystemInjectSymKeys, this);
+        const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
         for (const key of injectKeys) {
           // console.log(`Processing ${key}`);
-          const valueFunction = getMetadata(KoishiSystemInjectSym, this, key);
+          const valueFunction = reflector.get(KoishiSystemInjectSym, this, key);
           Object.defineProperty(this, key, {
             configurable: true,
             enumerable: true,
@@ -75,10 +75,10 @@ export function KoishiPlugin<T = any>(
 
       _handleServiceInjections() {
         // console.log('Handling service injection');
-        const injectKeys = getMetadataArray(KoishiServiceInjectSymKeys, this);
+        const injectKeys = reflector.getArray(KoishiServiceInjectSymKeys, this);
         for (const key of injectKeys) {
           // console.log(`Processing ${key}`);
-          const name = getMetadata(KoishiServiceInjectSym, this, key);
+          const name = reflector.get(KoishiServiceInjectSym, this, key);
           Object.defineProperty(this, key, {
             enumerable: true,
             configurable: true,
@@ -171,14 +171,14 @@ export function KoishiPlugin<T = any>(
 
       async _registerDeclarationsFor(methodKey: keyof C & string) {
         // console.log(`Handling declaration for ${methodKey}`);
-        const regData = getMetadata(KoishiDoRegister, this, methodKey);
+        const regData = reflector.get(KoishiDoRegister, this, methodKey);
         if (!regData) {
           return;
         }
         // console.log(`Type: ${regData.type}`);
         const baseContext = getContextFromFilters(
           this.__ctx,
-          getMetadataArray(KoishiOnContextScope, this, methodKey),
+          reflector.getArray(KoishiOnContextScope, this, methodKey),
         );
         switch (regData.type) {
           case 'middleware':
@@ -224,7 +224,7 @@ export function KoishiPlugin<T = any>(
               commandData.desc,
               commandData.config,
             );
-            const commandDefs = getMetadataArray(
+            const commandDefs = reflector.getArray(
               KoishiCommandDefinition,
               this,
               methodKey,
@@ -254,7 +254,7 @@ export function KoishiPlugin<T = any>(
       }
 
       async _registerDeclarations() {
-        const methodKeys = getMetadataArray(
+        const methodKeys = reflector.getArray(
           KoishiDoRegisterKeys,
           this,
         ) as (keyof C & string)[];
@@ -268,7 +268,7 @@ export function KoishiPlugin<T = any>(
 
       _handleServiceProvide(connect = true) {
         // console.log(`Handling service provide`);
-        const providingServices = getMetadataArray(
+        const providingServices = reflector.getArray(
           KoishiServiceProvideSym,
           originalClass,
         );
@@ -307,7 +307,7 @@ export function KoishiPlugin<T = any>(
       constructor(...args: any[]) {
         const originalCtx: Context = args[0];
         const rawConfig = args[1];
-        const contextFilters = getMetadataArray(
+        const contextFilters = reflector.getArray(
           KoishiOnContextScope,
           originalClass,
         );

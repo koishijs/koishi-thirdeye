@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"outDir": "dist",
 		"module": "commonjs",
-		"target": "es2021",
+		"target": "es2020",
 		"esModuleInterop": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
