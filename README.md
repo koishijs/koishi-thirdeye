@@ -61,6 +61,8 @@ koishi-thirdeye 内建了对[`koishi-utils-schemagen`](https://github.com/koishi
 
 * `@InjectApp()` 注入 Koishi 实例对象。
 
+* `@InjectLogger(name: string)` 注入 Koishi 日志记录器。
+
 ### 声明周期钩子
 
 下列方法是一些生命周期方法。这些方法会在插件特定生命周期中调用，便于注册方法等操作。

@@ -28,6 +28,7 @@ export interface PluginClass<T = any> {
   __ctx: Context;
   __config: T;
   __rawConfig: T;
+  __pluginOptions: KoishiPluginRegistrationOptions<T>;
 }
 
 export interface OnApply {
@@ -58,6 +59,7 @@ export function KoishiPlugin<T = any>(
       __ctx: Context;
       __config: T;
       __rawConfig: T;
+      __pluginOptions: KoishiPluginRegistrationOptions<T>;
 
       _handleSystemInjections() {
         // console.log('Handling system injection');
@@ -322,6 +324,7 @@ export function KoishiPlugin<T = any>(
         this.__ctx = ctx;
         this.__rawConfig = rawConfig;
         this.__config = config;
+        this.__pluginOptions = options;
         this._initializePluginClass().then();
       }
     };

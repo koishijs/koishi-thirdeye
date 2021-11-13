@@ -222,3 +222,7 @@ export const InjectContext = (select?: Selection) =>
 export const InjectApp = () => InjectSystem((obj) => obj.__ctx.app);
 export const InjectConfig = (raw = false) =>
   InjectSystem((obj) => (raw ? obj.__rawConfig : obj.__config));
+export const InjectLogger = (name?: string) =>
+  InjectSystem((obj) =>
+    obj.__ctx.logger(name || obj.__pluginOptions?.name || 'default'),
+  );
