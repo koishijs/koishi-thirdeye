@@ -270,10 +270,10 @@ export function KoishiPlugin<T = any>(
 
       _handleServiceProvide(connect = true) {
         // console.log(`Handling service provide`);
-        const providingServices = reflector.getArray(
-          KoishiServiceProvideSym,
-          originalClass,
-        );
+        const providingServices = [
+          ...reflector.getArray(KoishiServiceProvideSym, originalClass),
+          ...reflector.getArray(KoishiServiceProvideSym, this),
+        ];
         for (const key of providingServices) {
           // console.log(`Processing ${key}`);
           this.__ctx[key] = connect ? (this as any) : null;
@@ -309,10 +309,10 @@ export function KoishiPlugin<T = any>(
       constructor(...args: any[]) {
         const originalCtx: Context = args[0];
         const rawConfig = args[1];
-        const contextFilters = reflector.getArray(
-          KoishiOnContextScope,
-          originalClass,
-        );
+        const contextFilters = [
+          ...reflector.getArray(KoishiOnContextScope, originalClass),
+          ...reflector.getArray(KoishiOnContextScope, newClass),
+        ];
         const ctx = getContextFromFilters(originalCtx, contextFilters);
         const config =
           typeof options.schema === 'function'
