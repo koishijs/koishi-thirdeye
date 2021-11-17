@@ -20,7 +20,6 @@ import { reflector } from './meta/meta-fetch';
 import { applySelector } from './utility/utility';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
-  name?: string;
   schema?: Schema<T> | Type<T>;
 }
 
@@ -54,8 +53,11 @@ function getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
 export function KoishiPlugin<T = any>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
-  return function <C extends { new (...args: any[]): any }>(originalClass: C) {
+  return function <C extends { new (...args: any[]): any; schema?: Schema }>(
+    originalClass: C,
+  ) {
     const newClass = class extends originalClass implements PluginClass {
+      static schema = options.schema || originalClass.schema || undefined;
       __ctx: Context;
       __config: T;
       __rawConfig: T;
@@ -328,26 +330,6 @@ export function KoishiPlugin<T = any>(
         this._initializePluginClass().then();
       }
     };
-    if (options.name) {
-      Object.defineProperty(newClass, 'name', {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value: options.name,
-      });
-    }
-    if (options.schema) {
-      const schema =
-        typeof options.schema === 'function'
-          ? schemaFromClass(options.schema)
-          : options.schema;
-      Object.defineProperty(newClass, 'schema', {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value: schema,
-      });
-    }
     return newClass;
   };
 }
