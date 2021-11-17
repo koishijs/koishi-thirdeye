@@ -224,5 +224,9 @@ export const InjectConfig = (raw = false) =>
   InjectSystem((obj) => (raw ? obj.__rawConfig : obj.__config));
 export const InjectLogger = (name?: string) =>
   InjectSystem((obj) =>
-    obj.__ctx.logger(name || obj.__pluginOptions?.name || 'default'),
+    obj.__ctx.logger(
+      name ||
+        Object.getPrototypeOf(Object.getPrototypeOf(obj))?.constructor?.name ||
+        'default',
+    ),
   );
