@@ -18,6 +18,7 @@ import {
   MetadataMap,
   OnContextFunction,
   Selection,
+  SystemInjectFun,
 } from './def';
 import 'reflect-metadata';
 import { App, Argv, Command, Context, FieldCollector, Session } from 'koishi';
@@ -208,7 +209,7 @@ export function Provide(
   return Metadata.appendUnique(KoishiServiceProvideSym, name);
 }
 
-const InjectSystem = (fun: (obj: PluginClass) => any) =>
+const InjectSystem = (fun: SystemInjectFun) =>
   Metadata.set(KoishiSystemInjectSym, fun, KoishiSystemInjectSymKeys);
 
 export const InjectContext = (select?: Selection) =>
@@ -223,9 +224,10 @@ export const InjectApp = () => InjectSystem((obj) => obj.__ctx.app);
 export const InjectConfig = (raw = false) =>
   InjectSystem((obj) => (raw ? obj.__rawConfig : obj.__config));
 export const InjectLogger = (name?: string) =>
-  InjectSystem((obj) =>
+  InjectSystem((obj, config) =>
     obj.__ctx.logger(
       name ||
+        config.name ||
         Object.getPrototypeOf(Object.getPrototypeOf(obj))?.constructor?.name ||
         'default',
     ),

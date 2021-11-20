@@ -51,14 +51,26 @@ function getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
   return targetCtx;
 }
 
+function getSchemaFromOption<T>(schema: Schema<T> | Type<T>): Schema<T> {
+  if (!schema) {
+    return;
+  }
+  if (typeof schema !== 'function') {
+    return schema;
+  }
+  return schemaFromClass(schema);
+}
+
 export function KoishiPlugin<T = any>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
-  return function <C extends { new (...args: any[]): any; schema?: Schema }>(
-    originalClass: C,
-  ) {
+  return function <
+    C extends { new (...args: any[]): any; schema?: Schema; name?: string }
+  >(originalClass: C) {
     const newClass = class extends originalClass implements PluginClass {
-      static schema = options.schema || originalClass.schema || undefined;
+      static schema = getSchemaFromOption(
+        options.schema || originalClass.schema,
+      );
       __ctx: Context;
       __config: T;
       __rawConfig: T;
@@ -73,7 +85,7 @@ export function KoishiPlugin<T = any>(
           Object.defineProperty(this, key, {
             configurable: true,
             enumerable: true,
-            get: () => valueFunction(this),
+            get: () => valueFunction(this, options),
           });
         }
       }

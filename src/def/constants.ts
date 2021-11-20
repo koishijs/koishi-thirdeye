@@ -4,8 +4,8 @@ import {
   CommandDefinitionFun,
   DoRegisterConfig,
   OnContextFunction,
+  SystemInjectFun,
 } from './interfaces';
-import { PluginClass } from '../register';
 
 export const KoishiOnContextScope = 'KoishiOnContextScope';
 export const KoishiDoRegister = 'KoishiDoRegister';
@@ -33,5 +33,5 @@ export interface MetadataArrayMap {
 export interface MetadataMap {
   KoishiDoRegister: DoRegisterConfig;
   KoishiServiceInjectSym: keyof Context.Services;
-  KoishiSystemInjectSym: (obj: PluginClass) => any;
+  KoishiSystemInjectSym: SystemInjectFun;
 }

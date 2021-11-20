@@ -13,6 +13,7 @@ import {
   User,
 } from 'koishi';
 import { MetadataArrayMap, MetadataMap } from './constants';
+import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
 
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
@@ -142,3 +143,8 @@ export type CommandPutConfig<
 > = MappingStruct<CommandPutConfigMap, K>;
 
 export type CommandDefinitionFun = (cmd: Command) => Command;
+
+export type SystemInjectFun = <T = any>(
+  obj: PluginClass<T>,
+  pluginMeta: KoishiPluginRegistrationOptions<T>,
+) => any;
