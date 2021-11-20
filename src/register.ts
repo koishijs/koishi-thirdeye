@@ -20,6 +20,7 @@ import { reflector } from './meta/meta-fetch';
 import { applySelector } from './utility/utility';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
+  name?: string;
   schema?: Schema<T> | Type<T>;
 }
 
@@ -330,6 +331,14 @@ export function KoishiPlugin<T = any>(
         this._initializePluginClass().then();
       }
     };
+    if (options.name) {
+      Object.defineProperty(newClass, 'name', {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: options.name,
+      });
+    }
     return newClass;
   };
 }
