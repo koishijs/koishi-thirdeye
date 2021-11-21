@@ -12,7 +12,6 @@ import {
   Session,
   User,
 } from 'koishi';
-import { MetadataArrayMap, MetadataMap } from './constants';
 import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
 
 export interface Type<T = any> extends Function {

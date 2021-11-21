@@ -45,11 +45,9 @@ export default class MyPlugin implements OnApply {
 
 * `name` 插件名称。
 
-* `schema` 插件的配置描述模式。
+* `schema` 插件的配置描述模式。可以是 Schema 描述模式，也可以是由 `schemastery-gen` 生成的 Schema 类。
 
-koishi-thirdeye 内建了对[`koishi-utils-schemagen`](https://github.com/koishijs/koishi-utils-schemagen) 的支持。您可以直接传入由 `koishi-utils-schemagen` 定义的配置描述类。
-
-在插件初始化时，
+koishi-thirdeye 内建了 `schemastery-gen` 的支持。只需要导入这1个包即可。
 
 ## API
 
