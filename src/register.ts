@@ -17,6 +17,7 @@ import {
 } from './def';
 import { reflector } from './meta/meta-fetch';
 import { applySelector } from './utility/utility';
+import { RegisterSchema } from 'schemastery-gen';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
@@ -56,7 +57,9 @@ export function KoishiPlugin<T = any>(
     C extends { new (...args: any[]): any; schema?: Schema; name?: string }
   >(originalClass: C) {
     const newClass = class extends originalClass implements PluginClass {
-      static schema = options.schema;
+      static schema = (options.schema as Schema).type
+        ? options.schema
+        : RegisterSchema()(options.schema);
       __ctx: Context;
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;

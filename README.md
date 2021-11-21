@@ -13,7 +13,7 @@ npm install koishi-thirdeye koishi@next
 可以简单定义类以快速开发 Koishi 插件。
 
 ```ts
-import { KoishiPlugin, DefineSchema, CommandUsage, PutOption, UseCommand OnApply } from 'koishi-thirdeye'
+import { KoishiPlugin, DefineSchema, CommandUsage, PutOption, UseCommand, OnApply } from 'koishi-thirdeye'
 
 export class MyPluginConfig {
   @DefineSchema({ default: 'bar' })
@@ -24,7 +24,7 @@ export class MyPluginConfig {
 export default class MyPlugin implements OnApply {
   constructor(private ctx: Context, private config: Partial<MyPluginConfig>) {
   }
-  
+
   onApply() {
     // 该方法会在插件加载时调用，用于在上下文中注册事件等操作。
   }
@@ -47,7 +47,7 @@ export default class MyPlugin implements OnApply {
 
 * `schema` 插件的配置描述模式。可以是 Schema 描述模式，也可以是由 `schemastery-gen` 生成的 Schema 类。
 
-koishi-thirdeye 内建了 `schemastery-gen` 的支持。只需要导入这1个包即可。
+koishi-thirdeye 内建了 `schemastery-gen` 的支持。只需要导入这1个包即可。另外，系统会自动进行 `@RegisterSchema` 的配置描述的注册。
 
 ## API
 
