@@ -15,7 +15,6 @@ import {
   OnContextFunction,
   Type,
 } from './def';
-import { schemaFromClass, schemaTransform } from 'koishi-utils-schemagen';
 import { reflector } from './meta/meta-fetch';
 import { applySelector } from './utility/utility';
 
@@ -27,7 +26,6 @@ export interface KoishiPluginRegistrationOptions<T = any> {
 export interface PluginClass<T = any> {
   __ctx: Context;
   __config: T;
-  __rawConfig: T;
   __pluginOptions: KoishiPluginRegistrationOptions<T>;
 }
 
@@ -51,16 +49,6 @@ function getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
   return targetCtx;
 }
 
-function getSchemaFromOption<T>(schema: Schema<T> | Type<T>): Schema<T> {
-  if (!schema) {
-    return;
-  }
-  if (typeof schema !== 'function') {
-    return schema;
-  }
-  return schemaFromClass(schema);
-}
-
 export function KoishiPlugin<T = any>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
@@ -68,12 +56,9 @@ export function KoishiPlugin<T = any>(
     C extends { new (...args: any[]): any; schema?: Schema; name?: string }
   >(originalClass: C) {
     const newClass = class extends originalClass implements PluginClass {
-      static schema = getSchemaFromOption(
-        options.schema || originalClass.schema,
-      );
+      static schema = options.schema;
       __ctx: Context;
       __config: T;
-      __rawConfig: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
 
       _handleSystemInjections() {
@@ -323,21 +308,14 @@ export function KoishiPlugin<T = any>(
 
       constructor(...args: any[]) {
         const originalCtx: Context = args[0];
-        const rawConfig = args[1];
+        const config = args[1];
         const contextFilters = [
           ...reflector.getArray(KoishiOnContextScope, originalClass),
           ...reflector.getArray(KoishiOnContextScope, newClass),
         ];
         const ctx = getContextFromFilters(originalCtx, contextFilters);
-        const config =
-          typeof options.schema === 'function'
-            ? schemaTransform(options.schema, rawConfig)
-            : options.schema
-            ? Schema.validate(rawConfig, options.schema)
-            : rawConfig;
         super(ctx, config, ...args.slice(2));
         this.__ctx = ctx;
-        this.__rawConfig = rawConfig;
         this.__config = config;
         this.__pluginOptions = options;
         this._initializePluginClass().then();

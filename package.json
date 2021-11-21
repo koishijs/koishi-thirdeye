@@ -28,24 +28,25 @@
   "author": "Nanahira <nanahira@momobako.com>",
   "license": "MIT",
   "devDependencies": {
-    "@koishijs/plugin-adapter-onebot": "^4.0.0-beta.0",
-    "@types/node": "^16.11.7",
+    "@koishijs/plugin-adapter-onebot": "^4.0.0-beta.2",
+    "@types/node": "^16.11.9",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
-    "koishi": "^4.0.0-beta.1",
+    "koishi": "^4.0.0-beta.2",
     "prettier": "^2.4.1",
-    "typescript": "^4.4.4",
+    "typescript": "^4.5.2",
     "ws": "^8.2.3"
   },
   "peerDependencies": {
-    "koishi": "^4.0.0-beta.1"
+    "koishi": "^4.0.0-beta.2"
   },
   "dependencies": {
-    "koishi-utils-schemagen": "^1.1.9",
     "reflect-metadata": "^0.1.13",
-    "typed-reflector": "^1.0.4"
+    "schemastery": "^1.0.0",
+    "schemastery-gen": "^1.0.1",
+    "typed-reflector": "^1.0.5"
   }
 }
