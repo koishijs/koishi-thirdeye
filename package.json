@@ -46,7 +46,7 @@
   "dependencies": {
     "reflect-metadata": "^0.1.13",
     "schemastery": "^1.0.0",
-    "schemastery-gen": "^1.0.1",
+    "schemastery-gen": "^1.0.2",
     "typed-reflector": "^1.0.5"
   }
 }
