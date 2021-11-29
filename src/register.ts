@@ -21,7 +21,7 @@ import { ClassType, SchemaClass } from 'schemastery-gen';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
-  schema?: Schema<T> | Type<T>;
+  schema?: Schema<any, T> | Type<T>;
 }
 
 export interface PluginClass<T = any> {
@@ -58,7 +58,7 @@ export function KoishiPlugin<T = any>(
   >(originalClass: C) {
     const newClass = class extends originalClass implements PluginClass {
       static schema = (options.schema as Schema).type
-        ? (options.schema as Schema<T>)
+        ? (options.schema as Schema<Partial<T>, T>)
         : SchemaClass(options.schema as ClassType<T>);
       __ctx: Context;
       __config: T;
