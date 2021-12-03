@@ -5,6 +5,7 @@ import {
   DoRegisterConfig,
   EventName,
   GenerateMappingStruct,
+  KoishiAddUsingList,
   KoishiCommandDefinition,
   KoishiCommandPutDef,
   KoishiDoRegister,
@@ -17,6 +18,7 @@ import {
   KoishiSystemInjectSymKeys,
   MetadataMap,
   OnContextFunction,
+  ProvideOptions,
   Selection,
   SystemInjectFun,
 } from './def';
@@ -181,7 +183,26 @@ export const PutBot = () => PutSession('bot');
 
 // Service
 
-export function Inject(name?: keyof Context.Services): PropertyDecorator {
+export function Inject(
+  name?: keyof Context.Services,
+  addUsing?: boolean,
+): PropertyDecorator;
+export function Inject(addUsing?: boolean): PropertyDecorator;
+export function Inject(
+  ...args: [(keyof Context.Services | boolean)?, boolean?]
+): PropertyDecorator {
+  let name: keyof Context.Services;
+  let addUsing = false;
+  if (args.length === 1) {
+    if (typeof args[0] === 'boolean') {
+      addUsing = args[0];
+    } else {
+      name = args[0];
+    }
+  } else if (args.length >= 2) {
+    name = args[0] as keyof Context.Services;
+    addUsing = args[1];
+  }
   return (obj, key) => {
     if (!name) {
       const functionType = Reflect.getMetadata('design:type', obj, key);
@@ -196,6 +217,9 @@ export function Inject(name?: keyof Context.Services): PropertyDecorator {
       }
     }
     const serviceName = name || (key as keyof Context.Services);
+    if (addUsing) {
+      Metadata.appendUnique(KoishiAddUsingList, serviceName)(obj.constructor);
+    }
     const dec = Metadata.set(
       KoishiServiceInjectSym,
       serviceName,
@@ -207,10 +231,13 @@ export function Inject(name?: keyof Context.Services): PropertyDecorator {
 
 export function Provide(
   name: keyof Context.Services,
-  options?: Context.Options,
+  options?: ProvideOptions,
 ): ClassDecorator {
-  Context.service(name, options);
-  return Metadata.appendUnique(KoishiServiceProvideSym, name);
+  Context.service(name);
+  return Metadata.append(KoishiServiceProvideSym, {
+    ...options,
+    serviceName: name,
+  });
 }
 
 const InjectSystem = (fun: SystemInjectFun) =>

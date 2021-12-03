@@ -2,6 +2,7 @@ import { Argv, Command, Context, Schema, User } from 'koishi';
 import {
   CommandPutConfig,
   DoRegisterConfig,
+  KoishiAddUsingList,
   KoishiCommandDefinition,
   KoishiDoRegister,
   KoishiDoRegisterKeys,
@@ -18,10 +19,12 @@ import {
 import { reflector } from './meta/meta-fetch';
 import { applySelector } from './utility/utility';
 import { ClassType, SchemaClass } from 'schemastery-gen';
+import _ from 'lodash';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
   schema?: Schema<any, T> | Type<T>;
+  using?: (keyof Context.Services)[];
 }
 
 export interface PluginClass<T = any> {
@@ -54,12 +57,18 @@ export function KoishiPlugin<T = any>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
   return function <
-    C extends { new (...args: any[]): any; schema?: Schema; name?: string }
+    C extends {
+      new (...args: any[]): any;
+    } & KoishiPluginRegistrationOptions<any>
   >(originalClass: C) {
+    const addUsingList = reflector.getArray(KoishiAddUsingList, originalClass);
     const newClass = class extends originalClass implements PluginClass {
-      static schema = (options.schema as Schema).type
-        ? (options.schema as Schema<Partial<T>, T>)
-        : SchemaClass(options.schema as ClassType<T>);
+      static schema =
+        options.schema &&
+        ((options.schema as Schema).type
+          ? (options.schema as Schema<Partial<T>, T>)
+          : SchemaClass(options.schema as ClassType<T>));
+      static using = _.uniq([...(options.using || []), ...addUsingList]);
       __ctx: Context;
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
@@ -271,15 +280,15 @@ export function KoishiPlugin<T = any>(
         );
       }
 
-      _handleServiceProvide(connect = true) {
+      _handleServiceProvide(immediate: boolean) {
         // console.log(`Handling service provide`);
         const providingServices = [
           ...reflector.getArray(KoishiServiceProvideSym, originalClass),
           ...reflector.getArray(KoishiServiceProvideSym, this),
-        ];
+        ].filter((serviceDef) => !serviceDef.immediate === !immediate);
         for (const key of providingServices) {
           // console.log(`Processing ${key}`);
-          this.__ctx[key] = connect ? (this as any) : null;
+          this.__ctx[key.serviceName] = this as any;
         }
       }
 
@@ -289,17 +298,18 @@ export function KoishiPlugin<T = any>(
           if (typeof this.onConnect === 'function') {
             await this.onConnect();
           }
-          this._handleServiceProvide(true);
+          this._handleServiceProvide(false);
         });
         this.__ctx.on('disconnect', async () => {
           if (typeof this.onDisconnect === 'function') {
             await this.onDisconnect();
           }
-          this._handleServiceProvide(false);
+          // this._handleServiceProvide(false);
         });
       }
 
       async _initializePluginClass() {
+        this._handleServiceProvide(true);
         this._handleSystemInjections();
         this._handleServiceInjections();
         this._registerAfterInit();
