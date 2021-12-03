@@ -57,9 +57,11 @@ export function KoishiPlugin<T = any>(
     C extends { new (...args: any[]): any; schema?: Schema; name?: string }
   >(originalClass: C) {
     const newClass = class extends originalClass implements PluginClass {
-      static schema = (options.schema as Schema).type
-        ? (options.schema as Schema<Partial<T>, T>)
-        : SchemaClass(options.schema as ClassType<T>);
+      static schema =
+        options.schema &&
+        ((options.schema as Schema).type
+          ? (options.schema as Schema<Partial<T>, T>)
+          : SchemaClass(options.schema as ClassType<T>));
       __ctx: Context;
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
