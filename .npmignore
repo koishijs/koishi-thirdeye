@@ -10,3 +10,5 @@ Dockerfile
 /dist/test
 /src
 /coverage
+/tests
+/dist/tests
