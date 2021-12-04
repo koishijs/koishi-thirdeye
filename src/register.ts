@@ -63,7 +63,7 @@ export function KoishiPlugin<T = any>(
   >(originalClass: C) {
     const addUsingList = reflector.getArray(KoishiAddUsingList, originalClass);
     const newClass = class extends originalClass implements PluginClass {
-      static schema =
+      static Config =
         options.schema &&
         ((options.schema as Schema).type
           ? (options.schema as Schema<Partial<T>, T>)
