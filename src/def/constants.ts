@@ -4,6 +4,7 @@ import {
   CommandDefinitionFun,
   DoRegisterConfig,
   OnContextFunction,
+  ProvideDefinition,
   SystemInjectFun,
 } from './interfaces';
 
@@ -18,16 +19,18 @@ export const KoishiServiceInjectSymKeys = 'KoishiServiceInjectSymKeys';
 export const KoishiServiceProvideSym = 'KoishiServiceProvideSym';
 export const KoishiSystemInjectSym = 'KoishiSystemInjectSym';
 export const KoishiSystemInjectSymKeys = 'KoishiSystemInjectSymKeys';
+export const KoishiAddUsingList = 'KoishiAddUsingList';
 
 // metadata map
 
 export interface MetadataArrayMap {
   KoishiOnContextScope: OnContextFunction;
   KoishiCommandDefinition: CommandDefinitionFun;
-  KoishiServiceProvideSym: keyof Context.Services;
+  KoishiServiceProvideSym: ProvideDefinition;
   KoishiDoRegisterKeys: string;
   KoishiServiceInjectSymKeys: string;
   KoishiSystemInjectSymKeys: string;
+  KoishiAddUsingList: keyof Context.Services;
 }
 
 export interface MetadataMap {

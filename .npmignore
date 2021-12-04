@@ -9,3 +9,6 @@ Dockerfile
 /test
 /dist/test
 /src
+/coverage
+/tests
+/dist/tests
