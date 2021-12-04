@@ -224,8 +224,12 @@ export class MyDatabasePlugin {
 
 #### 定义
 
-* `@Inject(name?: string, options?: Context.Options)` 在插件类某一属性注入特定上下文 Service 。 `name` 默认为类方法名。
+* `@Inject(name?: string, addUsing?: boolean)` 在插件类某一属性注入特定上下文 Service 。 `name` 若为空则默认为类方法名。
+
+`addUsing` 若为 `true` 则会为插件注册的 Service 。
 
 特别的，为了编写简便，如果成员类型也是 Context 则会注入 Koishi 上下文，等效于 `@InjectContext()` 。
 
-* `@Provide(name: string)` 使用该插件提供 Service 。会自动完成 Koishi 的 `Context.service(name)` 声明操作。
+* `@Provide(name: string, options?: ProvideOptions)` 使用该插件提供 Service 。会自动完成 Koishi 的 `Context.service(name)` 声明操作。
+  * `immediate` 会在插件加载阶段瞬间完成 Service 注册。
+
