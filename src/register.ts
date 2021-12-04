@@ -207,15 +207,12 @@ export function KoishiPlugin<T = any>(
               this[methodKey](...args),
             );
             // special events
-            if (
-              typeof eventName === 'string' &&
-              eventName.startsWith('service/')
-            ) {
+            /*if (eventName === 'service') {
               const serviceName = eventName.slice(8);
               if (baseContext[serviceName] != null) {
                 this[methodKey]();
               }
-            }
+            }*/
             break;
           case 'plugin':
             const pluginDesc: KoishiModulePlugin<any> = await this[methodKey]();
