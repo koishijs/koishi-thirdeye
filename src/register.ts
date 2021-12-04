@@ -59,7 +59,7 @@ export function KoishiPlugin<T = any>(
   return function <
     C extends {
       new (...args: any[]): any;
-    } & KoishiPluginRegistrationOptions<any>
+    } & KoishiPluginRegistrationOptions<any>,
   >(originalClass: C) {
     const addUsingList = reflector.getArray(KoishiAddUsingList, originalClass);
     const newClass = class extends originalClass implements PluginClass {
@@ -122,17 +122,15 @@ export function KoishiPlugin<T = any>(
             }
             break;
           case 'channel':
-            const {
-              data: channelFields,
-            } = config as CommandPutConfig<'channel'>;
+            const { data: channelFields } =
+              config as CommandPutConfig<'channel'>;
             if (channelFields) {
               cmd.channelFields(channelFields);
             }
             break;
           case 'username':
-            const {
-              data: useDatabase,
-            } = config as CommandPutConfig<'username'>;
+            const { data: useDatabase } =
+              config as CommandPutConfig<'username'>;
             if (useDatabase) {
               cmd.userFields(['name']);
             }
@@ -163,9 +161,8 @@ export function KoishiPlugin<T = any>(
           case 'channel':
             return argv.session.channel;
           case 'username':
-            const {
-              data: useDatabase,
-            } = config as CommandPutConfig<'username'>;
+            const { data: useDatabase } =
+              config as CommandPutConfig<'username'>;
             if (useDatabase) {
               const user = argv.session.user as User.Observed<'name'>;
               if (user?.name) {
@@ -196,9 +193,8 @@ export function KoishiPlugin<T = any>(
         );
         switch (regData.type) {
           case 'middleware':
-            const {
-              data: midPrepend,
-            } = regData as DoRegisterConfig<'middleware'>;
+            const { data: midPrepend } =
+              regData as DoRegisterConfig<'middleware'>;
             baseContext.middleware(
               (session, next) => this[methodKey](session, next),
               midPrepend,
@@ -230,9 +226,8 @@ export function KoishiPlugin<T = any>(
             pluginCtx.plugin(pluginDesc.plugin, pluginDesc.options);
             break;
           case 'command':
-            const {
-              data: commandData,
-            } = regData as DoRegisterConfig<'command'>;
+            const { data: commandData } =
+              regData as DoRegisterConfig<'command'>;
             let command = baseContext.command(
               commandData.def,
               commandData.desc,
