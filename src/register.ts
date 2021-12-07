@@ -311,7 +311,7 @@ export function KoishiPlugin<T = any>(
         });
       }
 
-      async _initializePluginClass() {
+      _initializePluginClass() {
         this._handleServiceProvide(true);
         this._handleSystemInjections();
         this._handleServiceInjections();
@@ -334,7 +334,7 @@ export function KoishiPlugin<T = any>(
         this.__ctx = ctx;
         this.__config = config;
         this.__pluginOptions = options;
-        this._initializePluginClass().then();
+        this._initializePluginClass();
       }
     };
     if (options.name) {
