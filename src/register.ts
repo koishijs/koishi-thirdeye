@@ -304,11 +304,11 @@ export function KoishiPlugin<T = any>(
         this._handleServiceProvide(true);
         this._handleSystemInjections();
         this._handleServiceInjections();
-        this._registerAfterInit();
         await this._registerDeclarations();
         if (typeof this.onApply === 'function') {
           await this.onApply();
         }
+        this._registerAfterInit();
       }
 
       constructor(...args: any[]) {
