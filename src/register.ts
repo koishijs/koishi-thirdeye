@@ -1,4 +1,4 @@
-import { Argv, Command, Context, Schema, User } from 'koishi';
+import { Argv, Command, Context, Logger, Schema, User } from 'koishi';
 import {
   CommandPutConfig,
   DoRegisterConfig,
@@ -34,7 +34,7 @@ export interface PluginClass<T = any> {
 }
 
 export interface OnApply {
-  onApply(): void | Promise<void>;
+  onApply(): void;
 }
 
 export interface OnConnect {
@@ -180,7 +180,19 @@ export function KoishiPlugin<T = any>(
         }
       }
 
-      async _registerDeclarationsFor(methodKey: keyof C & string) {
+      async _applyInnerPlugin(
+        baseContext: Context,
+        methodKey: keyof C & string,
+      ) {
+        const pluginDesc: KoishiModulePlugin<any> = await this[methodKey]();
+        if (!pluginDesc || !pluginDesc.plugin) {
+          throw new Error(`Invalid plugin from method ${methodKey}.`);
+        }
+        const pluginCtx = applySelector(baseContext, pluginDesc);
+        pluginCtx.plugin(pluginDesc.plugin, pluginDesc.options);
+      }
+
+      _registerDeclarationsFor(methodKey: keyof C & string) {
         // console.log(`Handling declaration for ${methodKey}`);
         const regData = reflector.get(KoishiDoRegister, this, methodKey);
         if (!regData) {
@@ -215,12 +227,13 @@ export function KoishiPlugin<T = any>(
             }*/
             break;
           case 'plugin':
-            const pluginDesc: KoishiModulePlugin<any> = await this[methodKey]();
-            if (!pluginDesc || !pluginDesc.plugin) {
-              throw new Error(`Invalid plugin from method ${methodKey}.`);
-            }
-            const pluginCtx = applySelector(baseContext, pluginDesc);
-            pluginCtx.plugin(pluginDesc.plugin, pluginDesc.options);
+            this._applyInnerPlugin(baseContext, methodKey)
+              .then()
+              .catch((e) =>
+                new Logger(originalClass.name).error(
+                  `Failed to load plugin from method ${methodKey}: ${e.toString()}`,
+                ),
+              );
             break;
           case 'command':
             const { data: commandData } =
@@ -259,16 +272,14 @@ export function KoishiPlugin<T = any>(
         }
       }
 
-      async _registerDeclarations() {
+      _registerDeclarations() {
         const methodKeys = reflector.getArray(
           KoishiDoRegisterKeys,
           this,
         ) as (keyof C & string)[];
         // console.log(methodKeys);
-        await Promise.all(
-          methodKeys.map((methodKey) =>
-            this._registerDeclarationsFor(methodKey),
-          ),
+        methodKeys.forEach((methodKey) =>
+          this._registerDeclarationsFor(methodKey),
         );
       }
 
@@ -304,9 +315,9 @@ export function KoishiPlugin<T = any>(
         this._handleServiceProvide(true);
         this._handleSystemInjections();
         this._handleServiceInjections();
-        await this._registerDeclarations();
+        this._registerDeclarations();
         if (typeof this.onApply === 'function') {
-          await this.onApply();
+          this.onApply();
         }
         this._registerAfterInit();
       }
