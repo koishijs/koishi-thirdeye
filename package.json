@@ -42,6 +42,7 @@
     "jest": "^27.4.3",
     "koishi": "^4.0.0-beta.5",
     "prettier": "^2.4.1",
+    "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
     "typescript": "^4.5.2",
     "ws": "^8.2.3"
@@ -50,6 +51,8 @@
     "koishi": "^4.0.0-beta.5"
   },
   "dependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa__router": "^8.0.11",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "schemastery": "^2.1.0",

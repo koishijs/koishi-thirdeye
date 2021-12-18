@@ -11,6 +11,7 @@ import {
   KoishiDoRegister,
   KoishiDoRegisterKeys,
   KoishiOnContextScope,
+  KoishiRouteDef,
   KoishiServiceInjectSym,
   KoishiServiceInjectSymKeys,
   KoishiServiceProvideSym,
@@ -33,10 +34,26 @@ export const DoRegister = (value: DoRegisterConfig): MethodDecorator =>
 
 export const UseMiddleware = (prepend?: boolean): MethodDecorator =>
   DoRegister(GenerateMappingStruct('middleware', prepend));
+
 export const UseEvent = (name: EventName, prepend?: boolean): MethodDecorator =>
   DoRegister(GenerateMappingStruct('onevent', { name, prepend }));
+
 export const UsePlugin = (): MethodDecorator =>
   DoRegister(GenerateMappingStruct('plugin'));
+
+export const UseHttpRoute = (routeDef: KoishiRouteDef): MethodDecorator =>
+  DoRegister(GenerateMappingStruct('route', routeDef));
+
+export const Get = (path: string) => UseHttpRoute({ path, method: 'get' });
+export const Post = (path: string) => UseHttpRoute({ path, method: 'post' });
+export const Put = (path: string) => UseHttpRoute({ path, method: 'put' });
+export const Delete = (path: string) =>
+  UseHttpRoute({ path, method: 'delete' });
+export const Patch = (path: string) => UseHttpRoute({ path, method: 'patch' });
+export const Options = (path: string) =>
+  UseHttpRoute({ path, method: 'options' });
+export const Head = (path: string) => UseHttpRoute({ path, method: 'head' });
+export const All = (path: string) => UseHttpRoute({ path, method: 'all' });
 
 export function UseCommand<D extends string>(
   def: D,

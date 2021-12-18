@@ -285,6 +285,15 @@ export function KoishiPlugin<T = any>(
               });
             }
             break;
+          case 'route':
+            const { data: routeData } = regData as DoRegisterConfig<'route'>;
+            const realPath = routeData.path.startsWith('/')
+              ? routeData.path
+              : `/${routeData.path}`;
+            baseContext.router[routeData.method](realPath, (ctx, next) =>
+              this[methodKey](ctx, next),
+            );
+            break;
           default:
             throw new Error(`Unknown operation type ${regData.type}`);
         }

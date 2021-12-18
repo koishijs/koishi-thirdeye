@@ -13,6 +13,8 @@ import {
   User,
 } from 'koishi';
 import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
+import type { DefaultContext, DefaultState, ParameterizedContext } from 'koa';
+import type { RouterParamContext } from '@koa/router';
 
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
@@ -87,11 +89,12 @@ export interface DoRegisterConfigDataMap {
   onevent: EventNameAndPrepend;
   plugin: never;
   command: CommandRegisterConfig;
+  route: KoishiRouteDef;
 }
 
 export interface MappingStruct<
   T extends Record<string | number | symbol, any>,
-  K extends keyof T
+  K extends keyof T,
 > {
   type: K;
   data?: T[K];
@@ -99,7 +102,7 @@ export interface MappingStruct<
 
 export function GenerateMappingStruct<
   T extends Record<string | number | symbol, any>,
-  K extends keyof T
+  K extends keyof T,
 >(type: K, data?: T[K]): MappingStruct<T, K> {
   return {
     type,
@@ -108,7 +111,7 @@ export function GenerateMappingStruct<
 }
 
 export type DoRegisterConfig<
-  K extends keyof DoRegisterConfigDataMap = keyof DoRegisterConfigDataMap
+  K extends keyof DoRegisterConfigDataMap = keyof DoRegisterConfigDataMap,
 > = MappingStruct<DoRegisterConfigDataMap, K>;
 
 // Command stuff
@@ -138,7 +141,7 @@ export interface CommandPutConfigMap {
 }
 
 export type CommandPutConfig<
-  K extends keyof CommandPutConfigMap = keyof CommandPutConfigMap
+  K extends keyof CommandPutConfigMap = keyof CommandPutConfigMap,
 > = MappingStruct<CommandPutConfigMap, K>;
 
 export type CommandDefinitionFun = (cmd: Command) => Command;
@@ -155,3 +158,22 @@ export interface ProvideOptions {
 export interface ProvideDefinition extends ProvideOptions {
   serviceName: keyof Context.Services;
 }
+
+export interface KoishiRouteDef {
+  path: string;
+  method:
+    | 'get'
+    | 'post'
+    | 'put'
+    | 'delete'
+    | 'patch'
+    | 'options'
+    | 'head'
+    | 'all';
+}
+
+export type KoaContext = ParameterizedContext<
+  DefaultState,
+  DefaultContext & RouterParamContext<DefaultState, DefaultContext>,
+  any
+>;
