@@ -13,7 +13,8 @@ npm install koishi-thirdeye koishi@next
 可以简单定义类以快速开发 Koishi 插件。
 
 ```ts
-import { KoishiPlugin, DefineSchema, CommandUsage, PutOption, UseCommand, OnApply } from 'koishi-thirdeye'
+import { KoishiPlugin, DefineSchema, CommandUsage, PutOption, UseCommand, OnApply, KoaContext, UseMiddleware, UseEvent, Get } from 'koishi-thirdeye';
+import { Context, Session } from 'koishi';
 
 export class MyPluginConfig {
   @DefineSchema({ default: 'bar' })
@@ -29,10 +30,25 @@ export default class MyPlugin implements OnApply {
     // 该方法会在插件加载时调用，用于在上下文中注册事件等操作。
   }
 
+  @UseMiddleware()
+  simpleMiddleware(session: Session, next: NextFunction) {
+    return next();
+  }
+
+  @UseEvent('message')
+  onMessage(session: Session.Payload<'message'>) {
+
+  }
+
   @UseCommand('echo', '命令描述')
   @CommandUsage('命令说明')
   onEcho(@PutOption('content', '-c <content:string>  命令参数') content: string) {
     return content;
+  }
+
+  @Get('/ping')
+  onPing(ctx: KoaContext) {
+    ctx.body = 'pong';
   }
 }
 ```
@@ -121,6 +137,10 @@ export interface OnDisconnect {
 * `@UsePlugin()` 使用该方法注册插件。在 Koishi 实例注册时该方法会自动被调用。该方法需要返回插件定义，可以使用 `PluginDef(plugin, options, select)` 方法生成。 [参考](https://koishi.js.org/v4/guide/plugin/plugin.html#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6)
 
 * `@UseCommand(def: string, desc?: string, config?: Command.Config)` 注册指令。指令系统可以参考 [Koishi 文档](https://koishi.js.org/guide/command.html) 。指令回调参数位置和类型和 Koishi 指令一致。
+
+  * 若指定 `config.empty` 则不会注册当前函数为 action，用于没有 action 的父指令。
+
+* `@Get(path: string)` `@Post(path: string)` 在 Koishi 的 Koa 路由中注册 GET/POST 路径。此外， PUT PATCH DELETE 等方法也有所支持。
 
 ### 指令描述装饰器
 
