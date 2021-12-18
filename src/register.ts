@@ -1,4 +1,12 @@
-import { Argv, Command, Context, Logger, Schema, User } from 'koishi';
+import {
+  Argv,
+  Awaitable,
+  Command,
+  Context,
+  Logger,
+  Schema,
+  User,
+} from 'koishi';
 import {
   CommandPutConfig,
   DoRegisterConfig,
@@ -180,16 +188,32 @@ export function KoishiPlugin<T = any>(
         }
       }
 
-      async _applyInnerPlugin(
+      _applyInnerPluginDesc(
         baseContext: Context,
         methodKey: keyof C & string,
+        pluginDesc: KoishiModulePlugin<any>,
       ) {
-        const pluginDesc: KoishiModulePlugin<any> = await this[methodKey]();
+        const pluginCtx = applySelector(baseContext, pluginDesc);
         if (!pluginDesc || !pluginDesc.plugin) {
           throw new Error(`Invalid plugin from method ${methodKey}.`);
         }
-        const pluginCtx = applySelector(baseContext, pluginDesc);
         pluginCtx.plugin(pluginDesc.plugin, pluginDesc.options);
+      }
+
+      _applyInnerPlugin(baseContext: Context, methodKey: keyof C & string) {
+        const pluginDescMayBeProm: Awaitable<KoishiModulePlugin<any>> =
+          this[methodKey]();
+        if (pluginDescMayBeProm instanceof Promise) {
+          pluginDescMayBeProm.then((pluginDesc) => {
+            this._applyInnerPluginDesc(baseContext, methodKey, pluginDesc);
+          });
+        } else {
+          this._applyInnerPluginDesc(
+            baseContext,
+            methodKey,
+            pluginDescMayBeProm,
+          );
+        }
       }
 
       _registerDeclarationsFor(methodKey: keyof C & string) {
@@ -215,7 +239,7 @@ export function KoishiPlugin<T = any>(
           case 'onevent':
             const { data: eventData } = regData as DoRegisterConfig<'onevent'>;
             const eventName = eventData.name;
-            baseContext.on(eventData.name, (...args: any[]) =>
+            baseContext.on(eventName, (...args: any[]) =>
               this[methodKey](...args),
             );
             // special events
@@ -227,13 +251,7 @@ export function KoishiPlugin<T = any>(
             }*/
             break;
           case 'plugin':
-            this._applyInnerPlugin(baseContext, methodKey)
-              .then()
-              .catch((e) =>
-                new Logger(originalClass.name).error(
-                  `Failed to load plugin from method ${methodKey}: ${e.toString()}`,
-                ),
-              );
+            this._applyInnerPlugin(baseContext, methodKey);
             break;
           case 'command':
             const { data: commandData } =
