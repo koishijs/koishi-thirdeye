@@ -242,8 +242,10 @@ export function KoishiPlugin<T = any>(
           case 'onevent':
             const { data: eventData } = regData as DoRegisterConfig<'onevent'>;
             const eventName = eventData.name;
-            baseContext.on(eventName, (...args: any[]) =>
-              this[methodKey](...args),
+            baseContext.on(
+              eventName,
+              (...args: any[]) => this[methodKey](...args),
+              eventData.prepend,
             );
             // special events
             /*if (eventName === 'service') {
