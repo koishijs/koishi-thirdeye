@@ -194,6 +194,9 @@ export function KoishiPlugin<T = any>(
         pluginDesc: KoishiModulePlugin<any>,
       ) {
         const pluginCtx = applySelector(baseContext, pluginDesc);
+        if (pluginDesc == null) {
+          return;
+        }
         if (!pluginDesc || !pluginDesc.plugin) {
           throw new Error(`Invalid plugin from method ${methodKey}.`);
         }
