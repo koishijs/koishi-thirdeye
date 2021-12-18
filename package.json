@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://code.mycard.moe/3rdeye/koishi-thirdeye.git"
+    "url": "https://github.com/koishijs/koishi-thirdeye.git"
   },
   "bugs": {
-    "url": "https://code.mycard.moe/3rdeye/koishi-thirdeye/issues"
+    "url": "https://github.com/koishijs/koishi-thirdeye/issues"
   },
-  "homepage": "https://code.mycard.moe/3rdeye/koishi-thirdeye",
+  "homepage": "https://github.com/koishijs/koishi-thirdeye",
   "keywords": [
     "Koishi.js",
     "koishi",
