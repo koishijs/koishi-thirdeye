@@ -247,14 +247,16 @@ export function KoishiPlugin<T = any>(
               (...args: any[]) => this[methodKey](...args),
               eventData.prepend,
             );
-            // special events
-            /*if (eventName === 'service') {
-              const serviceName = eventName.slice(8);
-              if (baseContext[serviceName] != null) {
-                this[methodKey]();
-              }
-            }*/
             break;
+          case 'beforeEvent':
+            const { data: beforeEventData } =
+              regData as DoRegisterConfig<'beforeEvent'>;
+            const beforeEventName = beforeEventData.name;
+            baseContext.before(
+              beforeEventName,
+              (...args: any[]) => this[methodKey](...args),
+              beforeEventData.prepend,
+            );
           case 'plugin':
             this._applyInnerPlugin(baseContext, methodKey);
             break;

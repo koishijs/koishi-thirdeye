@@ -1,4 +1,5 @@
 import {
+  BeforeEventName,
   CommandConfigExtended,
   CommandDefinitionFun,
   CommandPutConfig,
@@ -38,6 +39,12 @@ export const UseMiddleware = (prepend?: boolean): MethodDecorator =>
 
 export const UseEvent = (name: EventName, prepend?: boolean): MethodDecorator =>
   DoRegister(GenerateMappingStruct('onevent', { name, prepend }));
+
+export const UseBeforeEvent = (
+  name: BeforeEventName,
+  prepend?: boolean,
+): MethodDecorator =>
+  DoRegister(GenerateMappingStruct('beforeEvent', { name, prepend }));
 
 export const UsePlugin = (): MethodDecorator =>
   DoRegister(GenerateMappingStruct('plugin'));

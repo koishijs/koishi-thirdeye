@@ -1,6 +1,7 @@
 import {
   App,
   Argv,
+  BeforeEventMap,
   Channel,
   Command,
   Context,
@@ -76,17 +77,24 @@ export function PluginDef<T extends keyof Modules | Plugin>(
   return { plugin, options, select };
 }
 
-export type EventName = keyof EventMap;
-export interface EventNameAndPrepend {
-  name: EventName;
+export interface CommonEventNameAndPrepend<T extends keyof any> {
+  name: T;
   prepend?: boolean;
 }
+
+export type EventName = keyof EventMap;
+export type EventNameAndPrepend = CommonEventNameAndPrepend<EventName>;
+
+export type BeforeEventName = keyof BeforeEventMap;
+export type BeforeEventNameAndPrepend =
+  CommonEventNameAndPrepend<BeforeEventName>;
 
 export type ContextFunction<T> = (ctx: Context) => T;
 export type OnContextFunction = ContextFunction<Context>;
 export interface DoRegisterConfigDataMap {
   middleware: boolean; // prepend
   onevent: EventNameAndPrepend;
+  beforeEvent: BeforeEventNameAndPrepend;
   plugin: never;
   command: CommandRegisterConfig;
   route: KoishiRouteDef;
