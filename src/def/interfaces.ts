@@ -119,8 +119,12 @@ export type DoRegisterConfig<
 export interface CommandRegisterConfig<D extends string = string> {
   def: D;
   desc?: string;
-  config?: Command.Config;
+  config?: CommandConfigExtended;
   putOptions?: CommandPutConfig<keyof CommandPutConfigMap>[];
+}
+
+export interface CommandConfigExtended extends Command.Config {
+  empty?: boolean;
 }
 
 export interface CommandOptionConfig {

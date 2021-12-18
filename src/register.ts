@@ -269,20 +269,22 @@ export function KoishiPlugin<T = any>(
             for (const commandDef of commandDefs) {
               command = commandDef(command) || command;
             }
-            if (!commandData.putOptions) {
-              command.action((argv: Argv, ...args: any[]) =>
-                this[methodKey](argv, ...args),
-              );
-            } else {
-              for (const _optionToRegister of commandData.putOptions) {
-                this._preRegisterCommandActionArg(_optionToRegister, command);
-              }
-              command.action((argv: Argv, ...args: any[]) => {
-                const params = commandData.putOptions.map((o) =>
-                  this._getCommandActionArg(o, argv, args),
+            if (!commandData.config?.empty) {
+              if (!commandData.putOptions) {
+                command.action((argv: Argv, ...args: any[]) =>
+                  this[methodKey](argv, ...args),
                 );
-                return this[methodKey](...params);
-              });
+              } else {
+                for (const _optionToRegister of commandData.putOptions) {
+                  this._preRegisterCommandActionArg(_optionToRegister, command);
+                }
+                command.action((argv: Argv, ...args: any[]) => {
+                  const params = commandData.putOptions.map((o) =>
+                    this._getCommandActionArg(o, argv, args),
+                  );
+                  return this[methodKey](...params);
+                });
+              }
             }
             break;
           case 'route':

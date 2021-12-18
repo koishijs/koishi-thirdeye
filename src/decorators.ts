@@ -1,4 +1,5 @@
 import {
+  CommandConfigExtended,
   CommandDefinitionFun,
   CommandPutConfig,
   CommandPutConfigMap,
@@ -57,19 +58,19 @@ export const All = (path: string) => UseHttpRoute({ path, method: 'all' });
 
 export function UseCommand<D extends string>(
   def: D,
-  config?: Command.Config,
+  config?: CommandConfigExtended,
 ): MethodDecorator;
 export function UseCommand<D extends string>(
   def: D,
   desc: string,
-  config?: Command.Config,
+  config?: CommandConfigExtended,
 ): MethodDecorator;
 export function UseCommand(
   def: string,
-  ...args: [Command.Config?] | [string, Command.Config?]
+  ...args: [CommandConfigExtended?] | [string, CommandConfigExtended?]
 ): MethodDecorator {
   const desc = typeof args[0] === 'string' ? (args.shift() as string) : '';
-  const config = args[0] as Command.Config;
+  const config = args[0] as CommandConfigExtended;
   return (obj, key: string, des) => {
     const putOptions: CommandPutConfig<keyof CommandPutConfigMap>[] =
       Reflect.getMetadata(KoishiCommandPutDef, obj.constructor, key) ||
