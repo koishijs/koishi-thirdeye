@@ -333,13 +333,13 @@ export function KoishiPlugin<T = any>(
 
       _registerAfterInit() {
         // console.log(`Handling after init.`);
-        this.__ctx.on('connect', async () => {
+        this.__ctx.on('ready', async () => {
           if (typeof this.onConnect === 'function') {
             await this.onConnect();
           }
           this._handleServiceProvide(false);
         });
-        this.__ctx.on('disconnect', async () => {
+        this.__ctx.on('dispose', async () => {
           if (typeof this.onDisconnect === 'function') {
             await this.onDisconnect();
           }
