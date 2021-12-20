@@ -6,7 +6,7 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint --fix .",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "test": "jest --passWithNoTests"
   },
   "repository": {
