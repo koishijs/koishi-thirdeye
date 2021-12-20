@@ -89,7 +89,7 @@ type OmitSubstring<
   S extends string,
   T extends string,
 > = S extends `${infer L}${T}${infer R}` ? `${L}${R}` : never;
-type BeforeEventName = OmitSubstring<EventName & string, 'before-'>;
+export type BeforeEventName = OmitSubstring<EventName & string, 'before-'>;
 export type BeforeEventNameAndPrepend =
   CommonEventNameAndPrepend<BeforeEventName>;
 
