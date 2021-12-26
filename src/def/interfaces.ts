@@ -1,17 +1,13 @@
 import {
-  App,
   Argv,
-  BeforeEventMap,
-  Channel,
   Command,
   Context,
   EventMap,
   FieldCollector,
-  MaybeArray,
   Modules,
   Plugin,
   Session,
-  User,
+  Selection,
 } from 'koishi';
 import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
 import type { DefaultContext, DefaultState, ParameterizedContext } from 'koa';
@@ -19,25 +15,6 @@ import type { RouterParamContext } from '@koa/router';
 
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;
-}
-
-const selectors = [
-  'user',
-  'guild',
-  'channel',
-  'self',
-  'private',
-  'platform',
-] as const;
-
-type SelectorType = typeof selectors[number];
-type SelectorValue = boolean | MaybeArray<string | number>;
-type BaseSelection = { [K in SelectorType as `$${K}`]?: SelectorValue };
-
-export interface Selection extends BaseSelection {
-  $and?: Selection[];
-  $or?: Selection[];
-  $not?: Selection;
 }
 
 export interface ContextSelector {
