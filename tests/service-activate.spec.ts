@@ -1,5 +1,5 @@
 import { App, Context } from 'koishi';
-import { KoishiPlugin } from '../src/register';
+import { DefinePlugin } from '../src/register';
 import { Inject, Provide, UseEvent } from '../src/decorators';
 
 declare module 'koishi' {
@@ -15,7 +15,7 @@ declare module 'koishi' {
 }
 
 @Provide('myProvider')
-@KoishiPlugin()
+@DefinePlugin()
 class MyProvider {
   ping() {
     return 'pong';
@@ -23,7 +23,7 @@ class MyProvider {
 }
 
 @Provide('myEagerProvider', { immediate: true })
-@KoishiPlugin()
+@DefinePlugin()
 class MyEagerProvider {
   ping() {
     return 'pong eager';
@@ -31,7 +31,7 @@ class MyEagerProvider {
 }
 
 @Provide('myConsumer', { immediate: true })
-@KoishiPlugin()
+@DefinePlugin()
 class MyConsumer {
   @Inject()
   myProvider: MyProvider;
@@ -54,7 +54,7 @@ class MyConsumer {
 }
 
 @Provide('myUsingConsumer', { immediate: true })
-@KoishiPlugin()
+@DefinePlugin()
 class MyUsingConsumer {
   @Inject(true)
   myProvider: MyProvider;

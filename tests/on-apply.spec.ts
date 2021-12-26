@@ -1,6 +1,6 @@
 import { App, Context } from 'koishi';
 import {
-  KoishiPlugin,
+  DefinePlugin,
   OnApply,
   OnConnect,
   OnDisconnect,
@@ -19,15 +19,15 @@ declare module 'koishi' {
 }
 
 @Provide('immediateDependency', { immediate: true })
-@KoishiPlugin()
+@DefinePlugin()
 class ImmediateDependency {}
 
 @Provide('nonImmediateDependency')
-@KoishiPlugin()
+@DefinePlugin()
 class NonImmediateDependency {}
 
 @Provide('myPlugin', { immediate: true })
-@KoishiPlugin()
+@DefinePlugin()
 class TestingBase implements OnConnect, OnDisconnect, OnApply {
   @InjectContext()
   ctx: Context;

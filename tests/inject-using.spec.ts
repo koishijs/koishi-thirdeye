@@ -1,8 +1,8 @@
-import { Inject, KoishiPlugin } from '..';
+import { Inject, DefinePlugin } from '..';
 import { Cache, Assets, Bot, Context } from 'koishi';
 
 describe('InjectUsing', () => {
-  @KoishiPlugin({ using: ['database'] })
+  @DefinePlugin({ using: ['database'] })
   class MyPlugin {
     @Inject(true)
     cache: Cache;

@@ -13,7 +13,7 @@ npm install koishi-thirdeye koishi
 可以简单定义类以快速开发 Koishi 插件。
 
 ```ts
-import { KoishiPlugin, SchemaProperty, CommandUsage, PutOption, UseCommand, OnApply, KoaContext, UseMiddleware, UseEvent, Get } from 'koishi-thirdeye';
+import { DefinePlugin, SchemaProperty, CommandUsage, PutOption, UseCommand, OnApply, KoaContext, UseMiddleware, UseEvent, Get } from 'koishi-thirdeye';
 import { Context, Session } from 'koishi';
 
 export class MyPluginConfig {
@@ -21,7 +21,7 @@ export class MyPluginConfig {
   foo: string;
 }
 
-@KoishiPlugin({ name: 'my-plugin', schema: MyPluginConfig })
+@DefinePlugin({ name: 'my-plugin', schema: MyPluginConfig })
 export default class MyPlugin implements OnApply {
   constructor(private ctx: Context, private config: Partial<MyPluginConfig>) {
   }
@@ -55,7 +55,7 @@ export default class MyPlugin implements OnApply {
 
 ## 使用
 
-使用 koishi-thirdeye 编写的插件，需要在插件类上使用 `@KoishiPlugin(options: KoishiPluginRegistrationOptions)` 装饰器。
+使用 koishi-thirdeye 编写的插件，需要在插件类上使用 `@DefinePlugin(options: DefinePluginRegistrationOptions)` 装饰器。
 
 您可以在参数中指定该插件的基本信息。
 
@@ -68,7 +68,7 @@ koishi-thirdeye 内建了 `schemastery-gen` 的支持。只需要导入这1个�
 最基本的插件定义方式如下：
 
 ```ts
-import { KoishiPlugin, SchemaProperty, InjectConfig } from 'koishi-thirdeye';
+import { DefinePlugin, SchemaProperty, InjectConfig } from 'koishi-thirdeye';
 import { Context, Session } from 'koishi';
 
 export class MyPluginConfig {
@@ -76,7 +76,7 @@ export class MyPluginConfig {
   foo: string;
 }
 
-@KoishiPlugin({ name: 'my-plugin', schema: MyPluginConfig })
+@DefinePlugin({ name: 'my-plugin', schema: MyPluginConfig })
 export default class MyPlugin {
   constructor(private ctx: Context, private config: Partial<MyPluginConfig>) {
   }
@@ -92,10 +92,10 @@ export default class MyPlugin {
 
 您可以使用 `this.ctx` 以及 `this.config` 进行访问上下文对象以及插件配置。因此上面的例子可以简化为下面的代码：
 
-> `@KoishiPlugin` 装饰器不可省略。
+> `@DefinePlugin` 装饰器不可省略。
 
 ```ts
-import { KoishiPlugin, SchemaProperty, BasePlugin } from 'koishi-thirdeye';
+import { DefinePlugin, SchemaProperty, BasePlugin } from 'koishi-thirdeye';
 import { Context, Session } from 'koishi';
 
 export class MyPluginConfig {
@@ -103,7 +103,7 @@ export class MyPluginConfig {
   foo: string;
 }
 
-@KoishiPlugin({ name: 'my-plugin', schema: MyPluginConfig })
+@DefinePlugin({ name: 'my-plugin', schema: MyPluginConfig })
 export default class MyPlugin extends BasePlugin<MyPluginConfig> {
   
 }
@@ -235,7 +235,7 @@ koishi-thirdeye 使用一组装饰器进行描述指令的行为。这些装饰�
 import { Inject, UseEvent } from 'koishi-thirdeye';
 import { Cache } from 'koishi';
 
-@KoishiPlugin({ name: 'my-plugin' })
+@DefinePlugin({ name: 'my-plugin' })
 export class MyPlugin {
   constructor(private ctx: Context, private config: any) {
   }
@@ -280,7 +280,7 @@ declare module 'koishi' {
 
 // `@Provide(name)` 装饰器会自动完成 `Context.service(name)` 的声明操作
 @Provide('myService')
-@KoishiPlugin({ name: 'my-database' })
+@DefinePlugin({ name: 'my-database' })
 export class MyDatabasePlugin {
   // 该类会作为 Koishi 的 Service 供其他 Koishi 插件进行引用
 }

@@ -59,7 +59,7 @@ function getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
   return targetCtx;
 }
 
-export function KoishiPlugin<T = any>(
+export function DefinePlugin<T = any>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
   return function <
@@ -382,3 +382,5 @@ export function KoishiPlugin<T = any>(
     return newClass;
   };
 }
+
+export const KoishiPlugin = DefinePlugin;
