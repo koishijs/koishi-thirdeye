@@ -19,15 +19,20 @@ import {
   KoishiServiceProvideSym,
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
-  MetadataMap,
   OnContextFunction,
   ProvideOptions,
-  Selection,
   SystemInjectFun,
 } from './def';
 import 'reflect-metadata';
-import { App, Argv, Command, Context, FieldCollector, Session } from 'koishi';
-import { PluginClass } from './register';
+import {
+  App,
+  Argv,
+  Command,
+  Context,
+  FieldCollector,
+  Session,
+  Selection,
+} from 'koishi';
 import { Metadata } from './meta/metadata.decorators';
 
 // Register methods
