@@ -30,8 +30,8 @@ import {
   Command,
   Context,
   FieldCollector,
-  Session,
   Selection,
+  Session,
 } from 'koishi';
 import { Metadata } from './meta/metadata.decorators';
 

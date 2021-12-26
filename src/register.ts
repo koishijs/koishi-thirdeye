@@ -1,12 +1,4 @@
-import {
-  Argv,
-  Awaitable,
-  Command,
-  Context,
-  Logger,
-  Schema,
-  User,
-} from 'koishi';
+import { Argv, Awaitable, Command, Context, Schema, User } from 'koishi';
 import {
   CommandPutConfig,
   DoRegisterConfig,

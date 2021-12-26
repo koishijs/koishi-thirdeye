@@ -6,8 +6,8 @@ import {
   FieldCollector,
   Modules,
   Plugin,
-  Session,
   Selection,
+  Session,
 } from 'koishi';
 import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
 import type { DefaultContext, DefaultState, ParameterizedContext } from 'koa';
