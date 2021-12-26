@@ -5,7 +5,7 @@
 ## 安装
 
 ```shell
-npm install koishi-thirdeye koishi@next
+npm install koishi-thirdeye koishi
 ```
 
 ## 快速入门
@@ -13,11 +13,11 @@ npm install koishi-thirdeye koishi@next
 可以简单定义类以快速开发 Koishi 插件。
 
 ```ts
-import { KoishiPlugin, DefineSchema, CommandUsage, PutOption, UseCommand, OnApply, KoaContext, UseMiddleware, UseEvent, Get } from 'koishi-thirdeye';
+import { KoishiPlugin, SchemaProperty, CommandUsage, PutOption, UseCommand, OnApply, KoaContext, UseMiddleware, UseEvent, Get } from 'koishi-thirdeye';
 import { Context, Session } from 'koishi';
 
 export class MyPluginConfig {
-  @DefineSchema({ default: 'bar' })
+  @SchemaProperty({ default: 'bar' })
   foo: string;
 }
 
@@ -64,6 +64,50 @@ export default class MyPlugin implements OnApply {
 * `schema` 插件的配置描述模式。可以是 Schema 描述模式，也可以是由 `schemastery-gen` 生成的 Schema 类。
 
 koishi-thirdeye 内建了 `schemastery-gen` 的支持。只需要导入这1个包即可。另外，系统会自动进行 `@RegisterSchema` 的配置描述的注册。
+
+最基本的插件定义方式如下：
+
+```ts
+import { KoishiPlugin, SchemaProperty, InjectConfig } from 'koishi-thirdeye';
+import { Context, Session } from 'koishi';
+
+export class MyPluginConfig {
+  @SchemaProperty({ default: 'bar' })
+  foo: string;
+}
+
+@KoishiPlugin({ name: 'my-plugin', schema: MyPluginConfig })
+export default class MyPlugin {
+  constructor(private ctx: Context, private config: Partial<MyPluginConfig>) {
+  }
+
+  @InjectConfig()
+  private config: Config;
+}
+```
+
+### 插件基类
+
+为了简化不必要的代码，在您的类没有其他继承的情况下，可以继承于 `BasePlugin<Config>` 类，以省去不必要的构造函数等声明。
+
+您可以使用 `this.ctx` 以及 `this.config` 进行访问上下文对象以及插件配置。因此上面的例子可以简化为下面的代码：
+
+> `@KoishiPlugin` 装饰器不可省略。
+
+```ts
+import { KoishiPlugin, SchemaProperty, BasePlugin } from 'koishi-thirdeye';
+import { Context, Session } from 'koishi';
+
+export class MyPluginConfig {
+  @SchemaProperty({ default: 'bar' })
+  foo: string;
+}
+
+@KoishiPlugin({ name: 'my-plugin', schema: MyPluginConfig })
+export default class MyPlugin extends BasePlugin<MyPluginConfig> {
+  
+}
+```
 
 ## API
 
