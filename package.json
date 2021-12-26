@@ -40,7 +40,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "jest": "^27.4.3",
-    "koishi": "^4.0.0-beta.7",
+    "koishi": "^4.0.0-rc.0",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "supertest": "^6.1.6",
@@ -49,7 +49,7 @@
     "ws": "^8.2.3"
   },
   "peerDependencies": {
-    "koishi": "^4.0.0-beta.7"
+    "koishi": "^4.0.0-rc.0"
   },
   "dependencies": {
     "@types/koa": "^2.13.4",
