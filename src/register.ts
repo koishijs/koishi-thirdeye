@@ -45,6 +45,12 @@ export interface OnDisconnect {
   onDisconnect(): void | Promise<void>;
 }
 
+export interface LifecycleEvents {
+  onApply?(): void;
+  onConnect?(): void | Promise<void>;
+  onDisconnect?(): void | Promise<void>;
+}
+
 function getContextFromFilters(ctx: Context, filters: OnContextFunction[]) {
   let targetCtx = ctx;
   for (const fun of filters) {
