@@ -36,7 +36,7 @@ export default class MyPlugin implements OnApply {
   }
 
   @UseEvent('message')
-  onMessage(session: Session.Payload<'message'>) {
+  onMessage(session: Session) {
 
   }
 
