@@ -10,7 +10,7 @@ import { App, Command } from 'koishi';
 
 @CommandUsage('乒乓球真好玩！') // 会适用于 ping 和 pang 两个指令
 @DefinePlugin()
-export default class MyPlugin extends BasePlugin<any> {
+class MyPlugin extends BasePlugin<any> {
   @UseCommand('ping', 'Ping!')
   @CommandExample('枰！')
   onPing() {
