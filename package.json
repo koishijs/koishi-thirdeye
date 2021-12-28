@@ -57,7 +57,7 @@
     "reflect-metadata": "^0.1.13",
     "schemastery": "^2.1.2",
     "schemastery-gen": "^2.3.1",
-    "typed-reflector": "^1.0.8"
+    "typed-reflector": "^1.0.9"
   },
   "jest": {
     "moduleFileExtensions": [

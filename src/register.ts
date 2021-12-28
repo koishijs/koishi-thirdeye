@@ -269,10 +269,11 @@ export function DefinePlugin<T = any>(
               commandData.desc,
               commandData.config,
             );
-            const commandDefs = reflector.getArray(
+            const commandDefs = reflector.getProperty(
               KoishiCommandDefinition,
               this,
               methodKey,
+              originalClass,
             );
             for (const commandDef of commandDefs) {
               command = commandDef(command) || command;

@@ -134,7 +134,9 @@ export const OnSelection = (selection: Selection) =>
 
 // Command definition
 
-export const CommandDef = (def: CommandDefinitionFun): MethodDecorator =>
+export const CommandDef = (
+  def: CommandDefinitionFun,
+): MethodDecorator & ClassDecorator =>
   Metadata.append(KoishiCommandDefinition, def);
 
 export const CommandDescription = (desc: string) =>
