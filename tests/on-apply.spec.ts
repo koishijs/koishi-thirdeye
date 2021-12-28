@@ -94,8 +94,8 @@ describe('Apply and Connect in koishi-thirdeye', () => {
     app.plugin(MyPlugin2);
     await RunApplyTest(app);
   });
-  /*it('should be applied and connected with non-immediate dependency', async () => {
+  it('should be applied and connected with non-immediate dependency', async () => {
     app.plugin(MyPlugin3);
     await RunApplyTest(app);
-  });*/
+  });
 });
