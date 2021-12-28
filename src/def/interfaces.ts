@@ -126,9 +126,10 @@ export interface CommandOptionConfig {
 }
 
 export interface CommandPutConfigMap {
+  args: never;
   arg: number;
   argv: never;
-  session: never;
+  argvField: keyof Argv;
   option: CommandOptionConfig;
   user: FieldCollector<'user'>;
   channel: FieldCollector<'channel'>;

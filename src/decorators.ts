@@ -186,7 +186,9 @@ function PutCommandParam<T extends keyof CommandPutConfigMap>(
 
 export const PutArgv = () => PutCommandParam('argv');
 export const PutSession = (field?: keyof Session) =>
-  field ? PutCommandParam('sessionField', field) : PutCommandParam('session');
+  field
+    ? PutCommandParam('sessionField', field)
+    : PutCommandParam('argvField', 'session');
 export const PutArg = (i: number) => PutCommandParam('arg', i);
 export const PutOption = (
   name: string,
@@ -210,6 +212,7 @@ export const PutChannelId = () => PutSession('channelId');
 export const PutChannelName = () => PutSession('channelName');
 export const PutSelfId = () => PutSession('selfId');
 export const PutBot = () => PutSession('bot');
+export const PutNext = () => PutCommandParam('argvField', 'next');
 
 // Service
 

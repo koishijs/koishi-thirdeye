@@ -153,12 +153,13 @@ export function DefinePlugin<T = any>(
         }
         switch (config.type) {
           case 'arg':
-            const { data: index } = config as CommandPutConfig<'arg'>;
-            return args[index];
+            const { data: argIndex } = config as CommandPutConfig<'arg'>;
+            return args[argIndex];
           case 'argv':
             return argv;
-          case 'session':
-            return argv.session;
+          case 'argvField':
+            const { data: argvField } = config as CommandPutConfig<'argvField'>;
+            return argv[argvField];
           case 'option':
             const { data: optionData } = config as CommandPutConfig<'option'>;
             return argv.options[optionData.name];
