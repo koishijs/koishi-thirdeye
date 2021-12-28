@@ -152,6 +152,8 @@ export function DefinePlugin<T = any>(
           return;
         }
         switch (config.type) {
+          case 'args':
+            return args;
           case 'arg':
             const { data: argIndex } = config as CommandPutConfig<'arg'>;
             return args[argIndex];

@@ -169,6 +169,12 @@ export const CommandUserFields = (fields: FieldCollector<'user'>) =>
 export const CommandChannelFields = (fields: FieldCollector<'channel'>) =>
   CommandDef((cmd) => cmd.channelFields(fields));
 
+export const CommandBefore = (callback: Command.Action, append = false) =>
+  CommandDef((cmd) => cmd.before(callback, append));
+
+export const CommandAction = (callback: Command.Action, prepend = false) =>
+  CommandDef((cmd) => cmd.action(callback, prepend));
+
 // Command put config
 
 function PutCommandParam<T extends keyof CommandPutConfigMap>(
@@ -190,6 +196,7 @@ export const PutSession = (field?: keyof Session) =>
     ? PutCommandParam('sessionField', field)
     : PutCommandParam('argvField', 'session');
 export const PutArg = (i: number) => PutCommandParam('arg', i);
+export const PutArgs = () => PutCommandParam('args');
 export const PutOption = (
   name: string,
   desc: string,
