@@ -24,11 +24,7 @@ export interface ContextSelector {
 
 export type KoishiPluginOptions<T extends keyof Modules | Plugin> =
   | boolean
-  | (T extends keyof Modules
-      ? Plugin.ModuleConfig<Modules[T]>
-      : T extends Plugin
-      ? Plugin.Config<T>
-      : never);
+  | Plugin.Config<T>;
 
 export interface KoishiModulePlugin<T extends keyof Modules | Plugin>
   extends ContextSelector {
@@ -38,7 +34,7 @@ export interface KoishiModulePlugin<T extends keyof Modules | Plugin>
 
 export function PluginDef<T extends keyof Modules>(
   plugin: T,
-  options?: boolean | Plugin.ModuleConfig<Modules[T]>,
+  options?: boolean | Plugin.Config<T>,
   select?: Selection,
 ): KoishiModulePlugin<T>;
 export function PluginDef<T extends Plugin>(

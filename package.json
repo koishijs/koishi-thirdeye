@@ -29,8 +29,8 @@
   "author": "Nanahira <nanahira@momobako.com>",
   "license": "MIT",
   "devDependencies": {
-    "@koishijs/plugin-adapter-onebot": "^4.0.0-beta.2",
-    "@koishijs/plugin-cache-lru": "^1.0.0-alpha.1",
+    "@koishijs/plugin-adapter-onebot": "^4.0.0-rc.0",
+    "@koishijs/plugin-cache-lru": "^1.0.0-rc.0",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.177",
     "@types/node": "^16.11.9",
@@ -40,7 +40,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "jest": "^27.4.3",
-    "koishi": "^4.0.0-rc.0",
+    "koishi": "^4.0.0-rc.1",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "supertest": "^6.1.6",
@@ -49,7 +49,7 @@
     "ws": "^8.2.3"
   },
   "peerDependencies": {
-    "koishi": "^4.0.0-rc.0"
+    "koishi": "^4.0.0-rc.1"
   },
   "dependencies": {
     "@types/koa": "^2.13.4",
