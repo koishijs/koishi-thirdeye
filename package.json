@@ -30,7 +30,6 @@
   "license": "MIT",
   "devDependencies": {
     "@koishijs/plugin-adapter-onebot": "^4.0.0-rc.0",
-    "@koishijs/plugin-cache-lru": "^1.0.0-rc.0",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.177",
     "@types/node": "^16.11.9",
