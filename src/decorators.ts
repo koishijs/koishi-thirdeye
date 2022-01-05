@@ -139,6 +139,11 @@ export const CommandDef = (
 ): MethodDecorator & ClassDecorator =>
   Metadata.append(KoishiCommandDefinition, def);
 
+export const CommandUse = <T extends Command, R extends any[]>(
+  callback: (command: Command, ...args: R) => T,
+  ...args: R
+) => CommandDef((cmd) => callback(cmd, ...args));
+
 export const CommandDescription = (desc: string) =>
   CommandDef((cmd) => {
     cmd.description = desc;
