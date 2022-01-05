@@ -179,7 +179,9 @@ export function DefinePlugin<T = any>(
               }
             }
             return (
-              argv.session.author?.nickname || argv.session.author?.username
+              argv.session.author?.nickname ||
+              argv.session.author?.username ||
+              argv.session.userId
             );
           case 'sessionField':
             const { data: field } = config as CommandPutConfig<'sessionField'>;
