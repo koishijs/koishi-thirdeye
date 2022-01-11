@@ -1,4 +1,12 @@
-import { Argv, Awaitable, Command, Context, Schema, User } from 'koishi';
+import {
+  Argv,
+  Awaitable,
+  Command,
+  Context,
+  Schema,
+  User,
+  WebSocketLayer,
+} from 'koishi';
 import {
   CommandPutConfig,
   DoRegisterConfig,
@@ -78,6 +86,7 @@ export function DefinePlugin<T = any>(
       __ctx: Context;
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
+      __wsLayers: WebSocketLayer[];
 
       _handleSystemInjections() {
         // console.log('Handling system injection');
@@ -309,9 +318,10 @@ export function DefinePlugin<T = any>(
             break;
           case 'ws':
             const { data: wsPath } = regData as DoRegisterConfig<'ws'>;
-            baseContext.router.ws(wsPath, (socket, req) =>
+            const layer = baseContext.router.ws(wsPath, (socket, req) =>
               this[methodKey](socket, req),
             );
+            this.__wsLayers.push(layer);
             break;
           default:
             throw new Error(`Unknown operation type ${regData.type}`);
@@ -353,7 +363,9 @@ export function DefinePlugin<T = any>(
           if (typeof this.onDisconnect === 'function') {
             await this.onDisconnect();
           }
-          // this._handleServiceProvide(false);
+          for (const layer of this.__wsLayers) {
+            layer.close();
+          }
         });
       }
 
@@ -380,6 +392,7 @@ export function DefinePlugin<T = any>(
         this.__ctx = ctx;
         this.__config = config;
         this.__pluginOptions = options;
+        this.__wsLayers = [];
         this._initializePluginClass();
       }
     };
