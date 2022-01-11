@@ -4,6 +4,7 @@ import {
   Context,
   EventMap,
   FieldCollector,
+  MaybeArray,
   Modules,
   Plugin,
   Selection,
@@ -82,6 +83,7 @@ export interface DoRegisterConfigDataMap {
   plugin: never;
   command: CommandRegisterConfig;
   route: KoishiRouteDef;
+  ws: MaybeArray<string | RegExp>;
 }
 
 export interface MappingStruct<

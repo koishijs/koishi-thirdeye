@@ -30,6 +30,7 @@ import {
   Command,
   Context,
   FieldCollector,
+  MaybeArray,
   Selection,
   Session,
 } from 'koishi';
@@ -67,6 +68,8 @@ export const Options = (path: string) =>
   UseHttpRoute({ path, method: 'options' });
 export const Head = (path: string) => UseHttpRoute({ path, method: 'head' });
 export const All = (path: string) => UseHttpRoute({ path, method: 'all' });
+export const Ws = (path: MaybeArray<string | RegExp>) =>
+  DoRegister(GenerateMappingStruct('ws', path));
 
 export function UseCommand<D extends string>(
   def: D,

@@ -307,6 +307,12 @@ export function DefinePlugin<T = any>(
               this[methodKey](ctx, next),
             );
             break;
+          case 'ws':
+            const { data: wsPath } = regData as DoRegisterConfig<'ws'>;
+            baseContext.router.ws(wsPath, (socket, req) =>
+              this[methodKey](socket, req),
+            );
+            break;
           default:
             throw new Error(`Unknown operation type ${regData.type}`);
         }
