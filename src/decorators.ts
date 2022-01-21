@@ -325,7 +325,7 @@ export function UsingService(
     for (const service of services) {
       if (!key) {
         // fallback to KoishiAddUsingList
-        Metadata.appendUnique(KoishiAddUsingList, service)(obj.constructor);
+        Metadata.appendUnique(KoishiAddUsingList, service)(obj);
       } else {
         Metadata.appendUnique(KoishiPartialUsing, service)(obj, key);
       }
