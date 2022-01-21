@@ -84,7 +84,13 @@ export function DefinePlugin<T = any>(
         ((options.schema as Schema).type
           ? (options.schema as Schema<Partial<T>, T>)
           : SchemaClass(options.schema as ClassType<T>));
-      static using = _.uniq([...(options.using || []), ...addUsingList]);
+      static get using() {
+        const list = reflector
+          .getArray(KoishiAddUsingList, originalClass)
+          .concat(options.using || [])
+          .concat(reflector.getArray(KoishiAddUsingList, newClass));
+        return _.uniq(list);
+      }
       __ctx: Context;
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
