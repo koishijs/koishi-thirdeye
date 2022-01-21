@@ -20,6 +20,7 @@ export const KoishiServiceProvideSym = 'KoishiServiceProvideSym';
 export const KoishiSystemInjectSym = 'KoishiSystemInjectSym';
 export const KoishiSystemInjectSymKeys = 'KoishiSystemInjectSymKeys';
 export const KoishiAddUsingList = 'KoishiAddUsingList';
+export const KoishiPartialUsing = 'KoishiPartialUsing';
 
 // metadata map
 
@@ -31,6 +32,7 @@ export interface MetadataArrayMap {
   KoishiServiceInjectSymKeys: string;
   KoishiSystemInjectSymKeys: string;
   KoishiAddUsingList: keyof Context.Services;
+  KoishiPartialUsing: keyof Context.Services;
 }
 
 export interface MetadataMap {

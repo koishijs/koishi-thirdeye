@@ -1,6 +1,7 @@
 import { App, Context } from 'koishi';
 import { DefinePlugin } from '../src/register';
-import { Inject, Provide, UseEvent } from '../src/decorators';
+import { Inject, Provide, UseEvent, UsingService } from '../src/decorators';
+import { BasePlugin } from '../src/base-plugin';
 
 declare module 'koishi' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -10,23 +11,38 @@ declare module 'koishi' {
       myEagerProvider: MyEagerProvider;
       myConsumer: MyConsumer;
       myUsingConsumer: MyUsingConsumer;
+      myPartialConsumer: MyPartialConsumer;
+      dummyProvider: any;
     }
+  }
+
+  interface EventMap {
+    'pang'(message: string): Promise<string>;
+    'pong'(message: string): Promise<string>;
   }
 }
 
 @Provide('myProvider')
 @DefinePlugin()
-class MyProvider {
+class MyProvider extends BasePlugin<any> {
   ping() {
     return 'pong';
+  }
+
+  dispose() {
+    return this.ctx.dispose();
   }
 }
 
 @Provide('myEagerProvider', { immediate: true })
 @DefinePlugin()
-class MyEagerProvider {
+class MyEagerProvider extends BasePlugin<any> {
   ping() {
     return 'pong eager';
+  }
+
+  dispose() {
+    return this.ctx.dispose();
   }
 }
 
@@ -74,6 +90,32 @@ class MyUsingConsumer {
       this.eagerPongResult = this.myEagerProvider.ping();
     }
   }
+
+  emitResult: string;
+}
+
+@Provide('myPartialConsumer', { immediate: true })
+@DefinePlugin()
+class MyPartialConsumer {
+  @Inject()
+  dummyProvider: number;
+
+  pongResult: string;
+
+  @UsingService('dummyProvider')
+  @UseEvent('pang')
+  async onPang(content: string) {
+    const msg = `pang: ${content}`;
+    console.log(msg);
+    return msg;
+  }
+
+  @UseEvent('pong')
+  async onPong(content: string) {
+    const msg = `pong: ${content}`;
+    console.log(msg);
+    return msg;
+  }
 }
 
 describe('On service', () => {
@@ -111,4 +153,28 @@ describe('On service', () => {
     //expect(app.myUsingConsumer.eagerPongResult).toBe('pong eager');
     //expect(app.myUsingConsumer.pongResult).toBe('pong');
   });
+
+  /*
+  it('Should handle partial using deps', async () => {
+    Context.service('dummyProvider');
+    app = new App();
+    app.on('service', (name) => {
+      console.log('service', name);
+    });
+    await app.start();
+    app.plugin(MyPartialConsumer);
+    expect(app.myPartialConsumer).toBeDefined();
+    expect(await app.waterfall('pang', 'hello')).toEqual('hello');
+    expect(await app.waterfall('pong', 'hello')).toEqual('pong: hello');
+    app.dummyProvider = { foo: 'bar' };
+    expect(await app.waterfall('pang', 'hello')).toEqual('pang: hello');
+    expect(await app.waterfall('pong', 'hello')).toEqual('pong: hello');
+    app.dummyProvider = undefined;
+    expect(await app.waterfall('pang', 'hi')).toEqual('hi');
+    expect(await app.waterfall('pong', 'hi')).toEqual('pong: hi');
+    app.dummyProvider = { foo: 'baz' };
+    expect(await app.waterfall('pang', 'hi')).toEqual('pang: hi');
+    expect(await app.waterfall('pong', 'hi')).toEqual('pong: hi');
+  });
+   */
 });

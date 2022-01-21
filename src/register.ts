@@ -6,6 +6,7 @@ import {
   Schema,
   User,
   WebSocketLayer,
+  Plugin,
 } from 'koishi';
 import {
   CommandPutConfig,
@@ -16,6 +17,7 @@ import {
   KoishiDoRegisterKeys,
   KoishiModulePlugin,
   KoishiOnContextScope,
+  KoishiPartialUsing,
   KoishiServiceInjectSym,
   KoishiServiceInjectSymKeys,
   KoishiServiceProvideSym,
@@ -89,10 +91,8 @@ export function DefinePlugin<T = any>(
       __wsLayers: WebSocketLayer[];
 
       _handleSystemInjections() {
-        // console.log('Handling system injection');
         const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
         for (const key of injectKeys) {
-          // console.log(`Processing ${key}`);
           const valueFunction = reflector.get(KoishiSystemInjectSym, this, key);
           Object.defineProperty(this, key, {
             configurable: true,
@@ -103,10 +103,8 @@ export function DefinePlugin<T = any>(
       }
 
       _handleServiceInjections() {
-        // console.log('Handling service injection');
         const injectKeys = reflector.getArray(KoishiServiceInjectSymKeys, this);
         for (const key of injectKeys) {
-          // console.log(`Processing ${key}`);
           const name = reflector.get(KoishiServiceInjectSym, this, key);
           Object.defineProperty(this, key, {
             enumerable: true,
@@ -231,22 +229,13 @@ export function DefinePlugin<T = any>(
         }
       }
 
-      _registerDeclarationsFor(methodKey: keyof C & string) {
-        // console.log(`Handling declaration for ${methodKey}`);
+      _registerDeclarationsProcess(methodKey: keyof C & string, ctx: Context) {
         const regData = reflector.get(KoishiDoRegister, this, methodKey);
-        if (!regData) {
-          return;
-        }
-        // console.log(`Type: ${regData.type}`);
-        const baseContext = getContextFromFilters(
-          this.__ctx,
-          reflector.getArray(KoishiOnContextScope, this, methodKey),
-        );
         switch (regData.type) {
           case 'middleware':
             const { data: midPrepend } =
               regData as DoRegisterConfig<'middleware'>;
-            baseContext.middleware(
+            ctx.middleware(
               (session, next) => this[methodKey](session, next),
               midPrepend,
             );
@@ -254,7 +243,7 @@ export function DefinePlugin<T = any>(
           case 'onevent':
             const { data: eventData } = regData as DoRegisterConfig<'onevent'>;
             const eventName = eventData.name;
-            baseContext.on(
+            ctx.on(
               eventName,
               (...args: any[]) => this[methodKey](...args),
               eventData.prepend,
@@ -264,18 +253,18 @@ export function DefinePlugin<T = any>(
             const { data: beforeEventData } =
               regData as DoRegisterConfig<'beforeEvent'>;
             const beforeEventName = beforeEventData.name;
-            baseContext.before(
+            ctx.before(
               beforeEventName,
               (...args: any[]) => this[methodKey](...args),
               beforeEventData.prepend,
             );
           case 'plugin':
-            this._applyInnerPlugin(baseContext, methodKey);
+            this._applyInnerPlugin(ctx, methodKey);
             break;
           case 'command':
             const { data: commandData } =
               regData as DoRegisterConfig<'command'>;
-            let command = baseContext.command(
+            let command = ctx.command(
               commandData.def,
               commandData.desc,
               commandData.config,
@@ -312,13 +301,13 @@ export function DefinePlugin<T = any>(
             const realPath = routeData.path.startsWith('/')
               ? routeData.path
               : `/${routeData.path}`;
-            baseContext.router[routeData.method](realPath, (ctx, next) =>
+            ctx.router[routeData.method](realPath, (ctx, next) =>
               this[methodKey](ctx, next),
             );
             break;
           case 'ws':
             const { data: wsPath } = regData as DoRegisterConfig<'ws'>;
-            const layer = baseContext.router.ws(wsPath, (socket, req) =>
+            const layer = ctx.router.ws(wsPath, (socket, req) =>
               this[methodKey](socket, req),
             );
             this.__wsLayers.push(layer);
@@ -328,19 +317,44 @@ export function DefinePlugin<T = any>(
         }
       }
 
+      _registerDeclarationsFor(methodKey: keyof C & string) {
+        if (!reflector.get(KoishiDoRegister, this, methodKey)) {
+          return;
+        }
+        const ctx = getContextFromFilters(
+          this.__ctx,
+          reflector.getArray(KoishiOnContextScope, this, methodKey),
+        );
+        const partialUsing = reflector.getArray(
+          KoishiPartialUsing,
+          this,
+          methodKey,
+        );
+        if (partialUsing.length) {
+          const name = `${options.name || originalClass.name}-${methodKey}`;
+          const innerPlugin: Plugin.Object = {
+            name,
+            using: partialUsing,
+            apply: (innerCtx) =>
+              this._registerDeclarationsProcess(methodKey, innerCtx),
+          };
+          ctx.plugin(innerPlugin);
+        } else {
+          this._registerDeclarationsProcess(methodKey, ctx);
+        }
+      }
+
       _registerDeclarations() {
         const methodKeys = reflector.getArray(
           KoishiDoRegisterKeys,
           this,
         ) as (keyof C & string)[];
-        // console.log(methodKeys);
         methodKeys.forEach((methodKey) =>
           this._registerDeclarationsFor(methodKey),
         );
       }
 
       _handleServiceProvide(immediate: boolean) {
-        // console.log(`Handling service provide`);
         const providingServices = [
           ...reflector.getArray(KoishiServiceProvideSym, originalClass),
           ...reflector.getArray(KoishiServiceProvideSym, this),
@@ -352,7 +366,6 @@ export function DefinePlugin<T = any>(
       }
 
       _registerAfterInit() {
-        // console.log(`Handling after init.`);
         this.__ctx.on('ready', async () => {
           if (typeof this.onConnect === 'function') {
             await this.onConnect();

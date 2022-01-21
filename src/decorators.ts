@@ -13,6 +13,7 @@ import {
   KoishiDoRegister,
   KoishiDoRegisterKeys,
   KoishiOnContextScope,
+  KoishiPartialUsing,
   KoishiRouteDef,
   KoishiServiceInjectSym,
   KoishiServiceInjectSymKeys,
@@ -313,7 +314,21 @@ export const InjectLogger = (name?: string) =>
   );
 export const Caller = () =>
   InjectSystem((obj) => {
-    const ctx = obj.__ctx;
-    const targetCtx: Context = ctx[Context.current] || ctx;
+    const targetCtx: Context = obj[Context.current] || obj.__ctx;
     return targetCtx;
   });
+
+export function UsingService(
+  ...services: (keyof Context.Services)[]
+): ClassDecorator & MethodDecorator {
+  return (obj, key?) => {
+    for (const service of services) {
+      if (!key) {
+        // fallback to KoishiAddUsingList
+        Metadata.appendUnique(KoishiAddUsingList, service)(obj.constructor);
+      } else {
+        Metadata.appendUnique(KoishiPartialUsing, service)(obj, key);
+      }
+    }
+  };
+}
