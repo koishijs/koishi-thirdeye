@@ -311,3 +311,9 @@ export const InjectLogger = (name?: string) =>
         'default',
     ),
   );
+export const Caller = () =>
+  InjectSystem((obj) => {
+    const ctx = obj.__ctx;
+    const targetCtx: Context = ctx[Context.current] || ctx;
+    return targetCtx;
+  });
