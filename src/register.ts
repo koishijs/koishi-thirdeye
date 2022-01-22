@@ -77,7 +77,6 @@ export function DefinePlugin<T = any>(
       new (...args: any[]): any;
     } & KoishiPluginRegistrationOptions<any>,
   >(originalClass: C) {
-    const addUsingList = reflector.getArray(KoishiAddUsingList, originalClass);
     const newClass = class extends originalClass implements PluginClass {
       static Config =
         options.schema &&
