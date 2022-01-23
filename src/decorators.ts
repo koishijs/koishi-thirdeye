@@ -16,6 +16,7 @@ import {
 // Export all koishi-decorator decorators
 
 export * from 'koishi-decorators/dist/src/decorators';
+export { PluginDef } from 'koishi-decorators';
 
 // Service API
 
