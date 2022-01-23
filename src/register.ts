@@ -1,4 +1,4 @@
-import { Context, Schema, WebSocketLayer, Plugin } from 'koishi';
+import { Context, Plugin, Schema, WebSocketLayer } from 'koishi';
 import {
   KoishiAddUsingList,
   KoishiPartialUsing,
