@@ -359,14 +359,29 @@ export function DefinePlugin<T = any>(
         );
       }
 
-      _handleServiceProvide(immediate: boolean) {
-        const providingServices = [
+      _getProvidingServices() {
+        return [
           ...reflector.getArray(KoishiServiceProvideSym, originalClass),
           ...reflector.getArray(KoishiServiceProvideSym, this),
-        ].filter((serviceDef) => !serviceDef.immediate === !immediate);
+        ];
+      }
+
+      _handleServiceProvide(immediate: boolean) {
+        const providingServices = this._getProvidingServices().filter(
+          (serviceDef) => !serviceDef.immediate === !immediate,
+        );
         for (const key of providingServices) {
           // console.log(`Processing ${key}`);
           this.__ctx[key.serviceName] = this as any;
+        }
+      }
+
+      _uninstallServiceProvide() {
+        const providingServices = this._getProvidingServices();
+        for (const key of providingServices) {
+          if (this.__ctx[key.serviceName] === (this as never)) {
+            this.__ctx[key.serviceName] = null;
+          }
         }
       }
 
@@ -378,6 +393,7 @@ export function DefinePlugin<T = any>(
           this._handleServiceProvide(false);
         });
         this.__ctx.on('dispose', async () => {
+          this._uninstallServiceProvide();
           if (typeof this.onDisconnect === 'function') {
             await this.onDisconnect();
           }
