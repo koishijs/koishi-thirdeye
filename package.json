@@ -48,7 +48,7 @@
     "ws": "^8.2.3"
   },
   "peerDependencies": {
-    "koishi": "^4.0.1"
+    "koishi": "^4.1.0"
   },
   "dependencies": {
     "@types/koa": "^2.13.4",
