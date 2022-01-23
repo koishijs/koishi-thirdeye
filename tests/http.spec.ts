@@ -1,8 +1,8 @@
 import { App } from 'koishi';
 import { DefinePlugin } from '../src/register';
 import { Get } from '../src/decorators';
-import { KoaContext } from '../src/def';
 import request from 'supertest';
+import { KoaContext } from 'koishi-decorators';
 
 @DefinePlugin()
 class MyPlugin {

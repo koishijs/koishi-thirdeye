@@ -1,9 +1,4 @@
-import {
-  CommandExample,
-  CommandShortcut,
-  CommandUsage,
-  UseCommand,
-} from '../src/decorators';
+import { CommandExample, CommandUsage, UseCommand } from '../src/decorators';
 import { BasePlugin } from '../src/base-plugin';
 import { DefinePlugin } from '../src/register';
 import { App, Command } from 'koishi';

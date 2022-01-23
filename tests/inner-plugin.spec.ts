@@ -1,9 +1,9 @@
 import { App } from 'koishi';
 import { DefinePlugin } from '../src/register';
 import { UsePlugin } from '../src/decorators';
-import { PluginDef } from '../src/def';
 import PluginOnebot from '@koishijs/plugin-adapter-onebot';
 import { BasePlugin } from '../src/base-plugin';
+import { PluginDef } from 'koishi-decorators';
 
 @DefinePlugin()
 class MyPlugin extends BasePlugin<any> {
