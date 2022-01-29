@@ -10,4 +10,4 @@ npm install koishi-thirdeye koishi
 
 ## 文档
 
-https://koishi.js.org/guide/misc/decorator.html
+https://koishi.js.org/guide/misc/decorators.html

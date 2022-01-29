@@ -40,7 +40,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "jest": "^27.4.3",
-    "koishi": "^4.1.0",
+    "koishi": "^4.1.1",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "supertest": "^6.1.6",
