@@ -58,7 +58,7 @@
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "schemastery": "^2.1.2",
-    "schemastery-gen": "^2.3.1",
+    "schemastery-gen": "^2.3.2",
     "typed-reflector": "^1.0.9"
   },
   "jest": {
