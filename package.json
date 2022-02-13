@@ -40,7 +40,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
     "jest": "^27.4.3",
-    "koishi": "^4.2.0",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "supertest": "^6.1.6",
@@ -48,17 +47,14 @@
     "typescript": "^4.5.2",
     "ws": "^8.2.3"
   },
-  "peerDependencies": {
-    "koishi": "^4.2.0"
-  },
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa__router": "^8.0.11",
-    "koishi-decorators": "^1.0.6",
+    "koishi-decorators": "^1.0.7",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "schemastery": "^2.4.2",
-    "schemastery-gen": "^2.4.1",
+    "schemastery-gen": "^2.4.2",
     "typed-reflector": "^1.0.9"
   },
   "jest": {
@@ -77,5 +73,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "peerDependencies": {
+    "koishi": "^4.2.0"
   }
 }
