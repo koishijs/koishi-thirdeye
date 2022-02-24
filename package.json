@@ -42,6 +42,8 @@
     "jest": "^27.4.3",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
+    "schemastery": "3.0.0",
+    "schemastery-gen": "^3.0.0",
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
     "typescript": "^4.5.2",
@@ -53,8 +55,6 @@
     "koishi-decorators": "^1.1.1",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
-    "schemastery": "^2.4.2",
-    "schemastery-gen": "^2.4.2",
     "typed-reflector": "^1.0.9"
   },
   "jest": {
@@ -75,6 +75,7 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "koishi": "^4.2.2"
+    "koishi": "^4.3.2",
+    "schemastery": "^3.0.0"
   }
 }
