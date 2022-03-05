@@ -53,7 +53,7 @@
     "koishi-decorators": "^1.1.1",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
-    "schemastery-gen": "^3.1.0",
+    "schemastery-gen": "^3.1.1",
     "typed-reflector": "^1.0.9"
   },
   "jest": {

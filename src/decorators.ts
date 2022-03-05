@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { App, Context, Selection } from 'koishi';
 import { Metadata } from './meta/metadata.decorators';
 import {
+  Condition,
   KoishiAddUsingList,
   KoishiPartialUsing,
   KoishiServiceInjectSym,
@@ -120,3 +121,6 @@ export function UsingService(
     }
   };
 }
+
+export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
+  Metadata.append('KoishiIf', func);

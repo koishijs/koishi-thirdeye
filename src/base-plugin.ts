@@ -5,5 +5,5 @@ export class BasePlugin<C, PC = Partial<C>> {
   constructor(protected ctx: Context, config: PC) {}
 
   @InjectConfig()
-  protected config: C;
+  config: C;
 }

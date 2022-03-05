@@ -1,6 +1,6 @@
 // metadatas
 import { Context } from 'koishi';
-import { ProvideDefinition, SystemInjectFun } from './interfaces';
+import { Condition, ProvideDefinition, SystemInjectFun } from './interfaces';
 
 export const KoishiServiceInjectSym = 'KoishiServiceInjectSym';
 export const KoishiServiceInjectSymKeys = 'KoishiServiceInjectSymKeys';
@@ -18,6 +18,7 @@ export interface MetadataArrayMap {
   KoishiSystemInjectSymKeys: string;
   KoishiAddUsingList: keyof Context.Services;
   KoishiPartialUsing: keyof Context.Services;
+  KoishiIf: Condition<boolean>;
 }
 
 export interface MetadataMap {

@@ -113,6 +113,13 @@ export function DefinePlugin<T = any>(
           methodKey,
           false,
         );
+        const conditions = reflector.getArray('KoishiIf', this, methodKey);
+        if (
+          conditions.some(
+            (condition) => !condition(this, this.__config as any, this.__ctx),
+          )
+        )
+          return;
         const partialUsing = reflector.getArray(
           KoishiPartialUsing,
           this,
