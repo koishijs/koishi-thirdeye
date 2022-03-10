@@ -1,8 +1,8 @@
 import { DefinePlugin } from '../src/register';
 import { UseCommand } from 'koishi-decorators';
-import { BasePlugin } from '../dist';
 import { If } from '../src/decorators';
 import { App } from 'koishi';
+import { BasePlugin } from '../src/base-plugin';
 
 @DefinePlugin()
 class MyPlugin extends BasePlugin<{ foo: boolean; bar: boolean }> {
