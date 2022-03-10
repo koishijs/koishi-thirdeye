@@ -50,7 +50,7 @@
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa__router": "^8.0.11",
-    "koishi-decorators": "^1.2.2",
+    "koishi-decorators": "^1.2.4",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "schemastery-gen": "^3.1.2",
