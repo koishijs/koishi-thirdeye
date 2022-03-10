@@ -1,5 +1,5 @@
 import { DefinePlugin } from '../src/register';
-import { OnGuild, UseCommand } from 'koishi-decorators';
+import { UseCommand } from 'koishi-decorators';
 import { BasePlugin } from '../dist';
 import { If } from '../src/decorators';
 import { App } from 'koishi';

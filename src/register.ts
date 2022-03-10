@@ -191,6 +191,7 @@ export function DefinePlugin<T = any>(
         this._handleServiceProvide(true);
         this._handleSystemInjections();
         this._handleServiceInjections();
+        this.__registrar.performTopActions(this.__ctx);
         this._registerDeclarations();
         if (typeof this.onApply === 'function') {
           this.onApply();
