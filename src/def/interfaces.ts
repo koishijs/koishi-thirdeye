@@ -1,5 +1,6 @@
 import { Context } from 'koishi';
 import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
+export * from 'koishi-decorators/dist/src/def/interfaces';
 
 // Command stuff
 
