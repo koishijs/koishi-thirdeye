@@ -1,6 +1,6 @@
 {
   "name": "koishi-thirdeye",
-  "version": "9.2.10",
+  "version": "9.2.11",
   "description": "装饰器形式的 Koishi 插件开发框架",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
