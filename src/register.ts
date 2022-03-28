@@ -188,7 +188,6 @@ export function DefinePlugin<T = any>(
       }
 
       _initializePluginClass() {
-        this._handleServiceProvide(true);
         this._handleSystemInjections();
         this._handleServiceInjections();
         this.__registrar.performTopActions(this.__ctx);
@@ -196,6 +195,7 @@ export function DefinePlugin<T = any>(
         if (typeof this.onApply === 'function') {
           this.onApply();
         }
+        this._handleServiceProvide(true);
         this._registerAfterInit();
       }
 
