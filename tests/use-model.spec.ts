@@ -6,15 +6,17 @@ import {
   PrimaryGenerated,
   Unique,
 } from 'koishi-entities';
-import { UseModel } from '../src/decorators';
+import { MixinModel, UseModel } from '../src/decorators';
 import { App } from 'koishi';
 import { BasePlugin } from '../src/base-plugin';
 import { DefinePlugin } from '../src/register';
 
 declare module 'koishi' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface Tables {
     dress: Dress;
+  }
+  interface User {
+    shirt: Wearing;
   }
 }
 
@@ -51,6 +53,30 @@ class Dress {
   properties: DressProperty;
 }
 
+class WearingPreference {
+  @ModelField('string(8)')
+  color: string;
+  @ModelField('string(12)')
+  shape: string;
+
+  format() {
+    return `${this.color} ${this.shape}`;
+  }
+}
+
+class Wearing {
+  @ModelField('string(3)')
+  size: string;
+
+  getSize() {
+    return this.size;
+  }
+
+  @ChildModel()
+  preference: WearingPreference;
+}
+
+@MixinModel('user', { shirt: Wearing })
 @UseModel(Dress)
 @DefinePlugin()
 class MyPlugin extends BasePlugin<any> {}
@@ -60,5 +86,6 @@ describe('Test of model', () => {
     const app = new App();
     app.plugin(MyPlugin);
     expect(app.model.config.dress.fields.name.type).toBe('string');
+    expect(app.model.config.user.fields['shirt.size'].type).toBe('string');
   });
 });

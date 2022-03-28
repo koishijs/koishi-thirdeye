@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { App, Context, Selection } from 'koishi';
+import { App, Context, Flatten, Keys, Selection, Tables } from 'koishi';
 import { Metadata } from './meta/metadata.decorators';
 import {
   Condition,
@@ -14,7 +14,7 @@ import {
   SystemInjectFun,
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';
-import { ModelClassType, registerModel } from 'koishi-entities';
+import { mixinModel, ModelClassType, registerModel } from 'koishi-entities';
 
 // Export all koishi-decorator decorators
 
@@ -129,3 +129,11 @@ export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
 
 export const UseModel = (...models: ModelClassType[]): ClassDecorator =>
   TopLevelAction((ctx) => models.forEach((m) => registerModel(ctx, m)));
+
+export const MixinModel = <K extends Keys<Tables>>(
+  tableName: K,
+  classDict: {
+    [F in Keys<Tables[K]>]?: ModelClassType<Flatten<Tables[K][F]>>;
+  },
+): ClassDecorator =>
+  TopLevelAction((ctx) => mixinModel(ctx, tableName, classDict));
