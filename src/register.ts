@@ -69,6 +69,7 @@ export function DefinePlugin<T = any>(
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
       __registrar: Registrar;
+      __pluginsToWaitFor: Promise<void>[];
 
       _handleSystemInjections() {
         const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
@@ -104,6 +105,11 @@ export function DefinePlugin<T = any>(
         if (result?.type === 'ws') {
           const layer = result.result as WebSocketLayer;
           ctx.on('dispose', () => layer.close());
+        } else if (result?.type === 'plugin') {
+          const mayBePromise = result.result;
+          if (mayBePromise instanceof Promise) {
+            this.__pluginsToWaitFor.push(mayBePromise);
+          }
         }
       }
 
@@ -174,6 +180,10 @@ export function DefinePlugin<T = any>(
 
       _registerAfterInit() {
         this.__ctx.on('ready', async () => {
+          if (this.__pluginsToWaitFor.length) {
+            await Promise.all(this.__pluginsToWaitFor);
+            this.__pluginsToWaitFor = [];
+          }
           if (typeof this.onConnect === 'function') {
             await this.onConnect();
           }
@@ -210,6 +220,7 @@ export function DefinePlugin<T = any>(
         this.__config = config;
         this.__pluginOptions = options;
         this.__registrar = new Registrar(this, originalClass);
+        this.__pluginsToWaitFor = [];
         this._initializePluginClass();
       }
     };
