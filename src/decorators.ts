@@ -13,6 +13,8 @@ import {
   ProvideOptions,
   SystemInjectFun,
 } from './def';
+import { TopLevelAction } from 'koishi-decorators';
+import { ModelClassType, registerModel } from 'koishi-entities';
 
 // Export all koishi-decorator decorators
 
@@ -124,3 +126,6 @@ export function UsingService(
 
 export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
   Metadata.append('KoishiIf', func);
+
+export const UseModel = (...models: ModelClassType[]): ClassDecorator =>
+  TopLevelAction((ctx) => models.forEach((m) => registerModel(ctx, m)));
