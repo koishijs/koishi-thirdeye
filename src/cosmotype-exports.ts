@@ -1,6 +1,7 @@
 import { ModelDecorators } from 'cosmotype-decorators';
 import { Tables } from 'koishi';
 
+export * from 'cosmotype-decorators';
 const decorators = new ModelDecorators<Tables>();
 
 export const DefineModel = decorators.DefineModel;
