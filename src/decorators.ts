@@ -14,7 +14,7 @@ import {
   SystemInjectFun,
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';
-import { mixinModel, ModelClassType, registerModel } from 'koishi-entities';
+import { ModelClassType, ModelRegistrar } from 'cosmotype-decorators';
 
 // Export all koishi-decorator decorators
 
@@ -128,7 +128,10 @@ export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
   Metadata.append('KoishiIf', func);
 
 export const UseModel = (...models: ModelClassType[]): ClassDecorator =>
-  TopLevelAction((ctx) => models.forEach((m) => registerModel(ctx, m)));
+  TopLevelAction((ctx) => {
+    const registrar = new ModelRegistrar(ctx.model);
+    models.forEach((m) => registrar.registerModel(m));
+  });
 
 export const MixinModel = <K extends Keys<Tables>>(
   tableName: K,
@@ -136,4 +139,7 @@ export const MixinModel = <K extends Keys<Tables>>(
     [F in Keys<Tables[K]>]?: ModelClassType<Flatten<Tables[K][F]>>;
   },
 ): ClassDecorator =>
-  TopLevelAction((ctx) => mixinModel(ctx, tableName, classDict));
+  TopLevelAction((ctx) => {
+    const registrar = new ModelRegistrar(ctx.model);
+    registrar.mixinModel(tableName, classDict);
+  });

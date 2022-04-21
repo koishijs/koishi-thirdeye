@@ -1,3 +1,7 @@
+import { MixinModel, UseModel } from '../src/decorators';
+import { App } from 'koishi';
+import { BasePlugin } from '../src/base-plugin';
+import { DefinePlugin } from '../src/register';
 import {
   ChildModel,
   DefineModel,
@@ -5,11 +9,7 @@ import {
   ModelField,
   PrimaryGenerated,
   Unique,
-} from 'koishi-entities';
-import { MixinModel, UseModel } from '../src/decorators';
-import { App } from 'koishi';
-import { BasePlugin } from '../src/base-plugin';
-import { DefinePlugin } from '../src/register';
+} from '../src/cosmotype-exports';
 
 declare module 'koishi' {
   interface Tables {
@@ -85,7 +85,7 @@ describe('Test of model', () => {
   it('should register model', async () => {
     const app = new App();
     app.plugin(MyPlugin);
-    expect(app.model.config.dress.fields.name.type).toBe('string');
-    expect(app.model.config.user.fields['shirt.size'].type).toBe('string');
+    expect(app.model.tables.dress.fields.name.type).toBe('string');
+    expect(app.model.tables.user.fields['shirt.size'].type).toBe('string');
   });
 });
