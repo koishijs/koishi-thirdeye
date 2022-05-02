@@ -10,6 +10,8 @@ export type PartialDeep<T> = T extends
   | undefined
   | symbol
   | Date
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | Function
   ? T | undefined
   : // Arrays, Sets and Maps and their readonly counterparts have their items made
   // deeply partial, but their own instances are left untouched
