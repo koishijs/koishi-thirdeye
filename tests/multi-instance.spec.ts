@@ -44,8 +44,6 @@ class Outer extends MultiInstancePlugin(Inner, OuterMessageConfig) {
 describe('It should register multi plugin instance', () => {
   it('register command on condition', async () => {
     const app = new App();
-    console.log(Inner['Config']);
-    console.log(Outer['Config']);
     app.plugin(Outer, { msg: 'hello', instances: [{ msg: 'world' }] });
     await app.start();
     const innerCommand = app.command('message');
