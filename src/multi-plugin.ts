@@ -25,10 +25,7 @@ export class MultiInstancePluginFramework<
 
   instances: TypeFromClass<InnerPlugin>[] = [];
 
-  _getInnerPlugin(): new (
-    ctx: Context,
-    config: ClassPluginConfig<InnerPlugin>,
-  ) => any {
+  _getInnerPlugin(): InnerPlugin {
     throw new Error(`Not implemented`);
   }
 
