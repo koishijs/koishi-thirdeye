@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { App, Context, Flatten, Keys, Selection, Tables } from 'koishi';
+import { App, Context, Flatten, Keys, Schema, Selection, Tables } from 'koishi';
 import { Metadata } from './meta/metadata.decorators';
 import {
   Condition,
@@ -15,6 +15,7 @@ import {
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';
 import { ModelClassType, ModelRegistrar } from 'cosmotype-decorators';
+import { ClassType } from 'schemastery-gen';
 
 // Export all koishi-decorator decorators
 
@@ -123,6 +124,9 @@ export function UsingService(
     }
   };
 }
+
+export const PluginSchema = (schema: Schema | ClassType<any>) =>
+  Metadata.set('KoishiPredefineSchema', schema);
 
 export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
   Metadata.append('KoishiIf', func);

@@ -54,7 +54,7 @@
     "koishi-decorators": "^2.0.0",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
-    "schemastery-gen": "^3.1.4",
+    "schemastery-gen": "^3.1.6",
     "typed-reflector": "^1.0.10"
   },
   "jest": {
@@ -75,7 +75,7 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "koishi": "^4.6.0",
+    "koishi": "^4.6.1",
     "schemastery": "^3.1.0"
   }
 }

@@ -1,6 +1,7 @@
 // metadatas
-import { Context } from 'koishi';
+import { Context, Schema } from 'koishi';
 import { Condition, ProvideDefinition, SystemInjectFun } from './interfaces';
+import { ClassType } from 'schemastery-gen';
 
 export const KoishiServiceInjectSym = 'KoishiServiceInjectSym';
 export const KoishiServiceInjectSymKeys = 'KoishiServiceInjectSymKeys';
@@ -24,4 +25,5 @@ export interface MetadataArrayMap {
 export interface MetadataMap {
   KoishiServiceInjectSym: keyof Context.Services;
   KoishiSystemInjectSym: SystemInjectFun;
+  KoishiPredefineSchema: Schema | ClassType<any>;
 }

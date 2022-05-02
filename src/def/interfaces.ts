@@ -22,3 +22,23 @@ export type Condition<R, T = any> = (
   config: T extends { config: infer C } ? C : any,
   ctx: Context,
 ) => R;
+
+export interface Instances<T> {
+  instances: T[];
+}
+
+export type AnyClassType = { new (...args: any[]): any };
+
+export type TypeFromClass<T> = T extends { new (...args: any[]): infer U }
+  ? U
+  : never;
+
+export type ParamsFromClass<T> = T extends { new (...args: infer U): any }
+  ? U
+  : never;
+
+export type MultiPluginConfig<Inner, Outer> = Instances<Inner> & Outer;
+
+export type ClassPluginConfig<
+  P extends new (ctx: Context, config: any) => any,
+> = P extends new (ctx: Context, config: infer C) => any ? C : never;
