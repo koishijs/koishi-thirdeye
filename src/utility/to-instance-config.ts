@@ -1,26 +1,25 @@
-import { OriginalClassSym, SchemaClass, SchemaProperty } from 'schemastery-gen';
 import {
-  AnyClassType,
-  Instances,
-  ParamsFromClass,
-  TypeFromClass,
-} from '../def';
-import { kSchema } from 'schemastery-gen/dist/src/utility/kschema';
+  AnyClass,
+  OriginalClassSym,
+  SchemaClass,
+  SchemaProperty,
+} from 'schemastery-gen';
+import { Instances, ParamsFromClass, TypeFromClass } from '../def';
 
 export function ToInstancesConfig<Inner extends new (...args: any[]) => any>(
   instanceConfig: Inner,
 ): new () => Instances<TypeFromClass<Inner>>;
 export function ToInstancesConfig<
-  Inner extends new (...args: any[]) => any,
-  Outer extends new (...args: any[]) => any,
+  Inner extends AnyClass,
+  Outer extends AnyClass,
 >(
   instanceConfig: Inner,
   outerConfig?: Outer,
 ): new (...args: ParamsFromClass<Outer>) => Instances<TypeFromClass<Inner>> &
   TypeFromClass<Outer>;
 export function ToInstancesConfig<
-  Inner extends AnyClassType,
-  Outer extends AnyClassType,
+  Inner extends AnyClass,
+  Outer extends AnyClass,
 >(
   instanceConfig: Inner,
   outerConfig?: Outer,

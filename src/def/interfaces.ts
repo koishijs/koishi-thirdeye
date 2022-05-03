@@ -27,8 +27,6 @@ export interface Instances<T> {
   instances: T[];
 }
 
-export type AnyClassType = { new (...args: any[]): any };
-
 export type TypeFromClass<T> = T extends { new (...args: any[]): infer U }
   ? U
   : never;
