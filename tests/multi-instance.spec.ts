@@ -62,7 +62,7 @@ class Outer2 extends MultiInstancePlugin(Inner2, OuterMessageConfig) {
   }
 }
 
-describe('It should register multi plugin instance', () => {
+describe('register multi plugin instance', () => {
   it('should work on schemastery-gen', async () => {
     const app = new App();
     app.plugin(Outer, { msg: 'hello', instances: [{ msg: 'world' }] });

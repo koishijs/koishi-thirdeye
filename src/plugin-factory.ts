@@ -1,18 +1,22 @@
 import { Context } from 'koishi';
-import { ClassType, Mixin, SchemaProperty } from 'schemastery-gen';
+import { AnyClass, ClassType, Mixin } from 'schemastery-gen';
 import { PluginSchema } from './decorators';
+import { PartialDeep } from './base-plugin';
 
-export function CreatePluginFactory<C, P>(
+export function CreatePluginFactory<C, IC, P extends { config: IC }>(
   basePlugin: new (ctx: Context, config: C) => P,
-  baseConfig: ClassType<C>,
-): <S>(specificConfig?: ClassType<S>) => new (ctx: Context, config: S & C) => P;
-export function CreatePluginFactory<C, P>(
-  basePlugin: new (ctx: Context, config: C) => any,
-  baseConfig: ClassType<C>,
-): <S>(
-  specificConfig?: ClassType<S>,
-) => new (ctx: Context, config: S & C) => P {
-  return (specificConfig) => {
+  baseConfig: ClassType<IC>,
+): <S>(specificConfig?: ClassType<S>) => new (
+  ctx: Context,
+  config: PartialDeep<S> & C,
+) => Omit<C, 'config'> & {
+  config: IC & S;
+};
+export function CreatePluginFactory(
+  basePlugin: new (ctx: Context, config: any) => any,
+  baseConfig: AnyClass,
+) {
+  return (specificConfig: AnyClass) => {
     const plugin = class specificPlugin extends basePlugin {};
     const config = specificConfig
       ? Mixin(specificConfig, baseConfig)
