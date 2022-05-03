@@ -1,10 +1,5 @@
-import {
-  AnyClass,
-  OriginalClassSym,
-  SchemaClass,
-  SchemaProperty,
-} from 'schemastery-gen';
-import { Instances, ParamsFromClass, TypeFromClass } from '../def';
+import { SchemaClass, SchemaProperty } from 'schemastery-gen';
+import { Instances, TypeFromClass } from '../def';
 
 export function ToInstancesConfig<Inner extends new (...args: any[]) => any>(
   instanceConfig: Inner,

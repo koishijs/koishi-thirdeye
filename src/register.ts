@@ -9,7 +9,7 @@ import {
   KoishiSystemInjectSymKeys,
 } from './def';
 import { reflector } from './meta/meta-fetch';
-import { ClassType, SchemaClass } from 'schemastery-gen';
+import { SchemaClass } from 'schemastery-gen';
 import _ from 'lodash';
 import { Registrar, Type } from 'koishi-decorators';
 

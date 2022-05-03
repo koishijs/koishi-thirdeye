@@ -1,16 +1,11 @@
 import { ClonePlugin } from './utility/clone-plugin';
 import { Context } from 'koishi';
-import { BasePlugin, PartialDeep } from './base-plugin';
-import {
-  ClassPluginConfig,
-  Instances,
-  MultiPluginConfig,
-  TypeFromClass,
-} from './def';
+import { BasePlugin } from './base-plugin';
+import { ClassPluginConfig, Instances, TypeFromClass } from './def';
 import { ClassType } from 'schemastery-gen';
 import { ToInstancesConfig } from './utility/to-instance-config';
 import Schema from 'schemastery';
-import { PluginSchema, UsingService } from './decorators';
+import { UsingService } from './decorators';
 import { UseEvent } from 'koishi-decorators';
 import { CreatePluginFactory } from './plugin-factory';
 
