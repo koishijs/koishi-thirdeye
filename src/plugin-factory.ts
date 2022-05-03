@@ -9,7 +9,7 @@ export function CreatePluginFactory<C, IC, P extends { config: IC }>(
 ): <S>(specificConfig?: ClassType<S>) => new (
   ctx: Context,
   config: PartialDeep<S> & C,
-) => Omit<C, 'config'> & {
+) => Omit<P, 'config'> & {
   config: IC & S;
 };
 export function CreatePluginFactory(
