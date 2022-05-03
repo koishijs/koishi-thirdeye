@@ -1,28 +1,20 @@
 import { ClonePlugin } from './utility/clone-plugin';
 import { Context } from 'koishi';
-import { PartialDeep } from './base-plugin';
+import { BasePlugin, PartialDeep } from './base-plugin';
 import { ClassPluginConfig, MultiPluginConfig, TypeFromClass } from './def';
 import { ClassType } from 'schemastery-gen';
 import { ToInstancesConfig } from './utility/to-instance-config';
 import Schema from 'schemastery';
-import { InjectConfig, PluginSchema, UsingService } from './decorators';
+import { PluginSchema, UsingService } from './decorators';
 import { UseEvent } from 'koishi-decorators';
 
 export class MultiInstancePluginFramework<
   InnerPlugin extends new (ctx: Context, config: any) => any,
   OuterConfig,
+> extends BasePlugin<
+  MultiPluginConfig<ClassPluginConfig<InnerPlugin>, OuterConfig>,
+  MultiPluginConfig<ClassPluginConfig<InnerPlugin>, PartialDeep<OuterConfig>>
 > {
-  constructor(
-    public ctx: Context,
-    config: MultiPluginConfig<
-      ClassPluginConfig<InnerPlugin>,
-      PartialDeep<OuterConfig>
-    >,
-  ) {}
-
-  @InjectConfig()
-  config: MultiPluginConfig<ClassPluginConfig<InnerPlugin>, OuterConfig>;
-
   instances: TypeFromClass<InnerPlugin>[] = [];
 
   _getInnerPlugin(): InnerPlugin {

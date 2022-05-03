@@ -33,7 +33,7 @@ export type PartialDeep<T> = T extends
     };
 
 export class BasePlugin<C, PC = PartialDeep<C>> {
-  constructor(protected ctx: Context, config: PC) {}
+  constructor(public ctx: Context, config: PC) {}
 
   @InjectConfig()
   config: C;
