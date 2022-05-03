@@ -1,5 +1,5 @@
 import { App, Session } from 'koishi';
-import { OnGuild, OnPlatform, Registrar, UseCommand } from 'koishi-decorators';
+import { OnGuild, OnPlatform, UseCommand } from 'koishi-decorators';
 import { DefinePlugin } from '../src/register';
 
 @OnPlatform('discord')

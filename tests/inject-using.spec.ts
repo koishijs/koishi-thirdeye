@@ -1,5 +1,5 @@
-import { Inject, DefinePlugin, UsingService } from '..';
-import { Cache, Assets, Bot, Context } from 'koishi';
+import { DefinePlugin, Inject, UsingService } from '..';
+import { Assets, Bot, Cache, Context } from 'koishi';
 
 describe('InjectUsing', () => {
   @UsingService('router')

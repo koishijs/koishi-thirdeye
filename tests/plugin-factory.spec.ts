@@ -1,9 +1,8 @@
 import { SchemaProperty } from 'schemastery-gen';
 import { UseCommand } from 'koishi-decorators';
 import { CreatePluginFactory } from '../src/plugin-factory';
-import { App, Context } from 'koishi';
+import { App } from 'koishi';
 import { DefinePlugin } from '../src/register';
-import { InjectConfig } from '../src/decorators';
 import { BasePlugin } from '../src/base-plugin';
 
 class MessageConfig {
