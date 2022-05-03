@@ -1,7 +1,6 @@
 import { Context } from 'koishi';
 import { ClassType, Mixin, SchemaProperty } from 'schemastery-gen';
 import { PluginSchema } from './decorators';
-import { BasePlugin } from './base-plugin';
 
 export function CreatePluginFactory<C, P>(
   basePlugin: new (ctx: Context, config: C) => P,
@@ -21,9 +20,4 @@ export function CreatePluginFactory<C, P>(
     PluginSchema(config)(plugin);
     return plugin;
   };
-}
-
-class TestConfig {
-  @SchemaProperty()
-  foo: string;
 }
