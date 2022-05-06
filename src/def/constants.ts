@@ -26,4 +26,5 @@ export interface MetadataMap {
   KoishiServiceInjectSym: keyof Context.Services;
   KoishiSystemInjectSym: SystemInjectFun;
   KoishiPredefineSchema: Schema | ClassType<any>;
+  KoishiPredefineName: string;
 }

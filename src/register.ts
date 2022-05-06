@@ -52,10 +52,15 @@ export function DefinePlugin<T = any>(
       new (...args: any[]): any;
     } & KoishiPluginRegistrationOptions<T>,
   >(originalClass: C) {
-    const schemaType =
-      options.schema || reflector.get('KoishiPredefineSchema', originalClass);
     const newClass = class extends originalClass implements PluginClass {
-      static Config = schemaType ? SchemaClass(schemaType) : undefined;
+      static get Config() {
+        const schemaType =
+          reflector.get('KoishiPredefineSchema', newClass) ||
+          reflector.get('KoishiPredefineSchema', originalClass) ||
+          options.schema;
+        return schemaType ? SchemaClass(schemaType) : undefined;
+      }
+
       static get using() {
         const list = reflector
           .getArray(KoishiAddUsingList, originalClass)
@@ -225,8 +230,11 @@ export function DefinePlugin<T = any>(
     Object.defineProperty(newClass, 'name', {
       enumerable: true,
       configurable: true,
-      writable: true,
-      value: options.name || originalClass.name,
+      get: () =>
+        reflector.get('KoishiPredefineName', newClass) ||
+        reflector.get('KoishiPredefineName', originalClass) ||
+        options.name ||
+        originalClass.name,
     });
     return newClass;
   };

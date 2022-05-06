@@ -128,6 +128,9 @@ export function UsingService(
 export const PluginSchema = (schema: Schema | ClassType<any>) =>
   Metadata.set('KoishiPredefineSchema', schema);
 
+export const PluginName = (name: string) =>
+  Metadata.set('KoishiPredefineName', name);
+
 export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
   Metadata.append('KoishiIf', func);
 
