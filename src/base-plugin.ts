@@ -1,5 +1,6 @@
 import { Context } from 'koishi';
-import { InjectConfig } from './decorators';
+import { ClassType } from 'schemastery-gen';
+import { InjectConfig, PluginSchema } from './decorators';
 
 export type PartialDeep<T> = T extends
   | string
@@ -37,4 +38,10 @@ export class BasePlugin<C, PC = PartialDeep<C>> {
 
   @InjectConfig()
   config: C;
+}
+
+export function StarterPlugin<C>(config: ClassType<C>) {
+  const plugin = class StarterPluginBase extends BasePlugin<C> {};
+  PluginSchema(config)(plugin);
+  return plugin;
 }
