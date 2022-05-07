@@ -7,6 +7,7 @@ import {
   KoishiServiceProvideSym,
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
+  ThirdEyeSym,
 } from './def';
 import { reflector } from './meta/meta-fetch';
 import { SchemaClass } from 'schemastery-gen';
@@ -61,6 +62,9 @@ export function DefinePlugin<T = any>(
     }
     if (options.using) {
       UsingService(...options.using)(originalClass);
+    }
+    if (originalClass[ThirdEyeSym]) {
+      return originalClass;
     }
     const newClass = class extends originalClass implements PluginClass {
       static get Config() {
@@ -243,6 +247,7 @@ export function DefinePlugin<T = any>(
         reflector.get('KoishiPredefineName', originalClass) ||
         originalClass.name,
     });
+    newClass[ThirdEyeSym] = true;
     return newClass;
   };
 }
