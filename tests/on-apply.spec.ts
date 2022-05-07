@@ -1,11 +1,16 @@
-import { App, Context } from 'koishi';
+import { App, Context, Logger } from 'koishi';
 import {
   DefinePlugin,
   OnApply,
   OnConnect,
   OnDisconnect,
 } from '../src/register';
-import { Inject, InjectContext, Provide } from '../src/decorators';
+import {
+  Inject,
+  InjectContext,
+  Provide,
+  InjectLogger,
+} from '../src/decorators';
 
 declare module 'koishi' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -31,6 +36,9 @@ class NonImmediateDependency {}
 class TestingBase implements OnConnect, OnDisconnect, OnApply {
   @InjectContext()
   ctx: Context;
+
+  @InjectLogger()
+  logger: Logger;
 
   onApply() {
     this.applied = true;
@@ -97,5 +105,11 @@ describe('Apply and Connect in koishi-thirdeye', () => {
   it('should be applied and connected with non-immediate dependency', async () => {
     app.plugin(MyPlugin3);
     await RunApplyTest(app);
+  });
+
+  it('should name logger correctly', () => {
+    app.plugin(MyPlugin);
+    const myPlugin = app.myPlugin;
+    expect(myPlugin.logger.name).toBe('MyPlugin');
   });
 });

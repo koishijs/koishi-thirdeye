@@ -1,5 +1,5 @@
 import { Context } from 'koishi';
-import { KoishiPluginRegistrationOptions, PluginClass } from '../register';
+import { PluginClass } from '../register';
 
 export * from 'koishi-decorators/dist/src/def/interfaces';
 
