@@ -90,6 +90,9 @@ export function DefinePlugin<T = any>(
         const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
         for (const key of injectKeys) {
           const valueFunction = reflector.get(KoishiSystemInjectSym, this, key);
+          if (!valueFunction) {
+            continue;
+          }
           Object.defineProperty(this, key, {
             configurable: true,
             enumerable: true,
@@ -102,6 +105,9 @@ export function DefinePlugin<T = any>(
         const injectKeys = reflector.getArray(KoishiServiceInjectSymKeys, this);
         for (const key of injectKeys) {
           const name = reflector.get(KoishiServiceInjectSym, this, key);
+          if (!name) {
+            continue;
+          }
           Object.defineProperty(this, key, {
             enumerable: true,
             configurable: true,
