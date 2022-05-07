@@ -1,7 +1,17 @@
-import { DefinePlugin, Inject, UsingService } from '..';
+import { RegisterSchema, SchemaProperty } from '..';
 import { Assets, Bot, Cache, Context } from 'koishi';
+import { PluginName, UsingService, Inject, PluginSchema } from '../src/decorators';
+import { DefinePlugin } from '../src/register';
+
+@RegisterSchema()
+class Config {
+  @SchemaProperty()
+  foo: string;
+}
 
 describe('InjectUsing', () => {
+  @PluginSchema(Config)
+  @PluginName('foo-plugin')
   @UsingService('router')
   @DefinePlugin({ using: ['database'] })
   @UsingService('http')
@@ -17,6 +27,8 @@ describe('InjectUsing', () => {
   }
 
   it('Should include injected using services', () => {
+    expect(MyPlugin.name).toBe('foo-plugin');
+    expect(MyPlugin['Config']).toEqual(Config);
     const usingList = (MyPlugin as any).using as (keyof Context.Services)[];
     expect(usingList).toBeInstanceOf(Array);
     expect(usingList.length).toEqual(5);

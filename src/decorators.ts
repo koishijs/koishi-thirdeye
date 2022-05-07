@@ -96,14 +96,7 @@ export const InjectContext = (select?: Selection) =>
 export const InjectApp = () => InjectSystem((obj) => obj.__ctx.app);
 export const InjectConfig = () => InjectSystem((obj) => obj.__config);
 export const InjectLogger = (name?: string) =>
-  InjectSystem((obj, config) =>
-    obj.__ctx.logger(
-      name ||
-        config.name ||
-        Object.getPrototypeOf(Object.getPrototypeOf(obj))?.constructor?.name ||
-        'default',
-    ),
-  );
+  InjectSystem((obj) => obj.__ctx.logger(name || obj.constructor.name));
 export const Caller = () =>
   InjectSystem((obj) => {
     const targetCtx: Context = obj[Context.current] || obj.__ctx;

@@ -5,10 +5,7 @@ export * from 'koishi-decorators/dist/src/def/interfaces';
 
 // Command stuff
 
-export type SystemInjectFun = <T = any>(
-  obj: PluginClass<T>,
-  pluginMeta: KoishiPluginRegistrationOptions<T>,
-) => any;
+export type SystemInjectFun = <T = any>(obj: PluginClass<T>) => any;
 
 export interface ProvideOptions {
   immediate?: boolean;

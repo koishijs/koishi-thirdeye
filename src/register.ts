@@ -12,6 +12,7 @@ import { reflector } from './meta/meta-fetch';
 import { SchemaClass } from 'schemastery-gen';
 import _ from 'lodash';
 import { Registrar, Type } from 'koishi-decorators';
+import { PluginName, PluginSchema, UsingService } from './decorators';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
@@ -52,19 +53,26 @@ export function DefinePlugin<T = any>(
       new (...args: any[]): any;
     } & KoishiPluginRegistrationOptions<T>,
   >(originalClass: C) {
+    if (options.name) {
+      PluginName(options.name)(originalClass);
+    }
+    if (options.schema) {
+      PluginSchema(options.schema)(originalClass);
+    }
+    if (options.using) {
+      UsingService(...options.using)(originalClass);
+    }
     const newClass = class extends originalClass implements PluginClass {
       static get Config() {
         const schemaType =
           reflector.get('KoishiPredefineSchema', newClass) ||
-          reflector.get('KoishiPredefineSchema', originalClass) ||
-          options.schema;
+          reflector.get('KoishiPredefineSchema', originalClass);
         return schemaType ? SchemaClass(schemaType) : undefined;
       }
 
       static get using() {
         const list = reflector
           .getArray(KoishiAddUsingList, originalClass)
-          .concat(options.using || [])
           .concat(reflector.getArray(KoishiAddUsingList, newClass));
         return _.uniq(list);
       }
@@ -81,7 +89,7 @@ export function DefinePlugin<T = any>(
           Object.defineProperty(this, key, {
             configurable: true,
             enumerable: true,
-            get: () => valueFunction(this, options),
+            get: () => valueFunction(this),
           });
         }
       }
@@ -135,7 +143,7 @@ export function DefinePlugin<T = any>(
           methodKey,
         );
         if (partialUsing.length) {
-          const name = `${options.name || originalClass.name}-${methodKey}`;
+          const name = `${newClass.name}-${methodKey}`;
           const innerPlugin: Plugin.Object = {
             name,
             using: partialUsing,
@@ -233,7 +241,6 @@ export function DefinePlugin<T = any>(
       get: () =>
         reflector.get('KoishiPredefineName', newClass) ||
         reflector.get('KoishiPredefineName', originalClass) ||
-        options.name ||
         originalClass.name,
     });
     return newClass;
