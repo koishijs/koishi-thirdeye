@@ -21,7 +21,7 @@ export interface KoishiPluginRegistrationOptions<T = any> {
   using?: (keyof Context.Services)[];
 }
 
-export interface PluginClass<T = any> {
+export interface PluginMeta<T = any> {
   __ctx: Context;
   __config: T;
   __registrar: Registrar;
@@ -66,7 +66,7 @@ export function DefinePlugin<T = any>(
     if (originalClass[ThirdEyeSym]) {
       return originalClass;
     }
-    const newClass = class extends originalClass implements PluginClass {
+    const newClass = class extends originalClass implements PluginMeta {
       static get Config() {
         const schemaType =
           reflector.get('KoishiPredefineSchema', newClass) ||

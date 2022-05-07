@@ -2,9 +2,10 @@ import { Context } from 'koishi';
 import { AnyClass, ClassType, Mixin } from 'schemastery-gen';
 import { PluginSchema } from './decorators';
 import { PartialDeep } from './base-plugin';
+import { PluginClass } from './def';
 
 export function CreatePluginFactory<C, IC, P extends { config: IC }>(
-  basePlugin: new (ctx: Context, config: C) => P,
+  basePlugin: PluginClass<C, P>,
   baseConfig: ClassType<IC>,
 ): <S>(specificConfig?: ClassType<S>) => new (
   ctx: Context,
@@ -13,7 +14,7 @@ export function CreatePluginFactory<C, IC, P extends { config: IC }>(
   config: IC & S;
 };
 export function CreatePluginFactory(
-  basePlugin: new (ctx: Context, config: any) => any,
+  basePlugin: PluginClass,
   baseConfig: AnyClass,
 ) {
   return (specificConfig: AnyClass) => {

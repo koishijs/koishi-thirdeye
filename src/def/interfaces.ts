@@ -1,11 +1,11 @@
 import { Context } from 'koishi';
-import { PluginClass } from '../register';
+import { PluginMeta } from '../register';
 
 export * from 'koishi-decorators/dist/src/def/interfaces';
 
 // Command stuff
 
-export type SystemInjectFun = <T = any>(obj: PluginClass<T>) => any;
+export type SystemInjectFun = <T = any>(obj: PluginMeta<T>) => any;
 
 export interface ProvideOptions {
   immediate?: boolean;
@@ -35,6 +35,10 @@ export type ParamsFromClass<T> = T extends { new (...args: infer U): any }
 
 export type MultiPluginConfig<Inner, Outer> = Instances<Inner> & Outer;
 
-export type ClassPluginConfig<
-  P extends new (ctx: Context, config: any) => any,
-> = P extends new (ctx: Context, config: infer C) => any ? C : never;
+export type PluginClass<C = any, P = any> = new (ctx: Context, config: C) => P;
+
+export type ClassPluginConfig<P extends PluginClass> = P extends PluginClass<
+  infer C
+>
+  ? C
+  : never;

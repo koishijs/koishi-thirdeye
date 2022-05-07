@@ -1,20 +1,27 @@
 import { ClonePlugin } from './utility/clone-plugin';
 import { Context } from 'koishi';
 import { BasePlugin } from './base-plugin';
-import { ClassPluginConfig, Instances, TypeFromClass } from './def';
+import {
+  ClassPluginConfig,
+  Instances,
+  PluginClass,
+  TypeFromClass,
+} from './def';
 import { ClassType } from 'schemastery-gen';
 import { ToInstancesConfig } from './utility/to-instance-config';
 import Schema from 'schemastery';
 import { UsingService } from './decorators';
 import { UseEvent } from 'koishi-decorators';
 import { CreatePluginFactory } from './plugin-factory';
+import { LifecycleEvents } from './register';
 
-export class MultiInstancePluginFramework<
-  InnerPlugin extends new (ctx: Context, config: any) => any,
-> extends BasePlugin<
-  Instances<ClassPluginConfig<InnerPlugin>>,
-  Instances<ClassPluginConfig<InnerPlugin>>
-> {
+export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
+  extends BasePlugin<
+    Instances<ClassPluginConfig<InnerPlugin>>,
+    Instances<ClassPluginConfig<InnerPlugin>>
+  >
+  implements LifecycleEvents
+{
   instances: TypeFromClass<InnerPlugin>[] = [];
 
   _getInnerPlugin(): InnerPlugin {
@@ -26,7 +33,7 @@ export class MultiInstancePluginFramework<
     for (let i = 0; i < this.config.instances.length; i++) {
       const clonedInnerPlugin = ClonePlugin(
         innerPlugin,
-        `${innerPlugin.name}_instance_${i}`,
+        `${this.constructor.name}_${innerPlugin.name}_instance_${i}`,
         (instance) => this.instances.push(instance),
       );
       this.ctx.plugin(clonedInnerPlugin, this.config.instances[i]);
@@ -44,7 +51,7 @@ export class MultiInstancePluginFramework<
 }
 
 export function MultiInstancePlugin<
-  InnerPlugin extends new (ctx: Context, config: any) => any,
+  InnerPlugin extends PluginClass,
   OuterConfig,
 >(innerPlugin: InnerPlugin, outerConfig?: ClassType<OuterConfig>) {
   const basePlugin = class SpecificMultiInstancePlugin extends MultiInstancePluginFramework<InnerPlugin> {
