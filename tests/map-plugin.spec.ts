@@ -2,7 +2,7 @@ import { SchemaProperty } from 'schemastery-gen';
 import { StarterPlugin } from '../src/base-plugin';
 import { DefinePlugin } from '../src/register';
 import { UseCommand } from 'koishi-decorators';
-import { MapPlugin } from '../src/plugin-operators/map-plugin';
+import { MapPlugin } from '../src/plugin-operators';
 import { App } from 'koishi';
 
 class DressConfig {
@@ -69,6 +69,6 @@ describe('register map plugin instance', () => {
     await app.start();
     expect(await app.command('dressColor').execute({})).toBe('red');
     expect(await app.command('wearingStrip').execute({})).toBe('pink');
-    expect(await app.command('skirtSize').execute({})).toBeFalsy();
+    expect(await app.command('skirtSize').execute({})).toBe('S');
   });
 });

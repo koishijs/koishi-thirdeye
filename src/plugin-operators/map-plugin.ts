@@ -9,11 +9,11 @@ import { ClonePlugin } from '../utility/clone-plugin';
 import { UseEvent } from 'koishi-decorators';
 
 type MapPluginToConfig<M extends Dict<PluginClass>> = {
-  [K in keyof M]?: ClassPluginConfig<M[K]> & Selection;
+  [K in keyof M]: ClassPluginConfig<M[K]> & Selection;
 };
 
 export class MapPluginBase<M extends Dict<PluginClass>>
-  extends BasePlugin<MapPluginToConfig<M>, MapPluginToConfig<M>>
+  extends BasePlugin<MapPluginToConfig<M>, Partial<MapPluginToConfig<M>>>
   implements LifecycleEvents
 {
   _getDict(): M {
@@ -28,7 +28,7 @@ export class MapPluginBase<M extends Dict<PluginClass>>
   onApply() {
     const dict = this._getDict();
     for (const [key, plugin] of Object.entries(dict)) {
-      if (this.config[key]?.[NoRegisterSym]) continue;
+      if (this.config[key] == null) continue;
       const ctx =
         typeof this.config[key] === 'object'
           ? this.ctx.select(this.config[key])
@@ -47,15 +47,12 @@ export class MapPluginBase<M extends Dict<PluginClass>>
     delete this._instanceMap;
   }
 }
-
-const NoRegisterSym = '__no_register' as const;
-
 function MappedConfig<M extends Dict<PluginClass>>(
   dict: M,
 ): ClassType<MapPluginToConfig<M>> {
-  const PropertySchema: ClassType<
+  const PropertySchema = class SpecificPropertySchema {} as ClassType<
     MapPluginToConfig<M>
-  > = class SpecificPropertySchema {};
+  >;
   for (const [key, plugin] of Object.entries(dict)) {
     const propertySchemaClass =
       plugin['Config'] ||
@@ -63,7 +60,6 @@ function MappedConfig<M extends Dict<PluginClass>>(
       reflector.get('KoishiPredefineSchema', plugin);
     SchemaProperty({
       type: propertySchemaClass,
-      default: { [NoRegisterSym]: true },
     })(PropertySchema.prototype, key);
   }
   return PropertySchema;

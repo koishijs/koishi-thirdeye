@@ -8,8 +8,8 @@ import {
 import {
   Inject,
   InjectContext,
-  Provide,
   InjectLogger,
+  Provide,
 } from '../src/decorators';
 
 declare module 'koishi' {
