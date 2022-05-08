@@ -1,11 +1,11 @@
 import { Dict, Selection } from 'koishi';
-import { ClassPluginConfig, PluginClass } from './def';
-import { BasePlugin } from './base-plugin';
-import { LifecycleEvents } from './register';
-import { reflector } from './meta/meta-fetch';
+import { ClassPluginConfig, PluginClass } from '../def';
+import { BasePlugin } from '../base-plugin';
+import { LifecycleEvents } from '../register';
+import { reflector } from '../meta/meta-fetch';
 import { ClassType, SchemaProperty } from 'schemastery-gen';
-import { CreatePluginFactory } from './plugin-factory';
-import { ClonePlugin } from './utility/clone-plugin';
+import { CreatePluginFactory } from '../plugin-factory';
+import { ClonePlugin } from '../utility/clone-plugin';
 import { UseEvent } from 'koishi-decorators';
 
 type MapPluginToConfig<M extends Dict<PluginClass>> = {

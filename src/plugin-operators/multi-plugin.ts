@@ -1,19 +1,19 @@
-import { ClonePlugin } from './utility/clone-plugin';
+import { ClonePlugin } from '../utility/clone-plugin';
 import { Context } from 'koishi';
-import { BasePlugin } from './base-plugin';
+import { BasePlugin } from '../base-plugin';
 import {
   ClassPluginConfig,
   Instances,
   PluginClass,
   TypeFromClass,
-} from './def';
+} from '../def';
 import { ClassType } from 'schemastery-gen';
-import { ToInstancesConfig } from './utility/to-instance-config';
+import { ToInstancesConfig } from '../utility/to-instance-config';
 import Schema from 'schemastery';
-import { UsingService } from './decorators';
+import { UsingService } from '../decorators';
 import { UseEvent } from 'koishi-decorators';
-import { CreatePluginFactory } from './plugin-factory';
-import { LifecycleEvents } from './register';
+import { CreatePluginFactory } from '../plugin-factory';
+import { LifecycleEvents } from '../register';
 
 export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
   extends BasePlugin<

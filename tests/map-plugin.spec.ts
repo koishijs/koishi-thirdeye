@@ -2,7 +2,7 @@ import { SchemaProperty } from 'schemastery-gen';
 import { StarterPlugin } from '../src/base-plugin';
 import { DefinePlugin } from '../src/register';
 import { UseCommand } from 'koishi-decorators';
-import { MapPlugin } from '../src/map-plugin';
+import { MapPlugin } from '../src/plugin-operators/map-plugin';
 import { App } from 'koishi';
 
 class DressConfig {
