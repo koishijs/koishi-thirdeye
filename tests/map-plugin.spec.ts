@@ -19,7 +19,7 @@ class DressPlugin extends StarterPlugin(DressConfig) {
 }
 
 class SkirtConfig {
-  @SchemaProperty()
+  @SchemaProperty({ default: 'S' })
   size: string;
 }
 
@@ -59,5 +59,16 @@ describe('register map plugin instance', () => {
     expect(await app.command('dressColor').execute({})).toBe('red');
     expect(await app.command('skirtSize').execute({})).toBe('XL');
     expect(await app.command('wearingStrip').execute({})).toBe('pink');
+  });
+  it('should partial register', async () => {
+    const app = new App();
+    app.plugin(WearingPlugin, {
+      dress: { color: 'red' },
+      strip: 'pink',
+    });
+    await app.start();
+    expect(await app.command('dressColor').execute({})).toBe('red');
+    expect(await app.command('wearingStrip').execute({})).toBe('pink');
+    expect(await app.command('skirtSize').execute({})).toBeFalsy();
   });
 });

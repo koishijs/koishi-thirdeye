@@ -28,18 +28,17 @@ export class MapPluginBase<M extends Dict<PluginClass>>
   onApply() {
     const dict = this._getDict();
     for (const [key, plugin] of Object.entries(dict)) {
-      if (this.config[key] != null) {
-        const ctx =
-          typeof this.config[key] === 'object'
-            ? this.ctx.select(this.config[key])
-            : this.ctx;
-        const clonedPlugin = ClonePlugin(
-          plugin,
-          `${this.constructor.name}_${plugin.name}_dict_${key}`,
-          (o) => this._instanceMap.set(key, o),
-        );
-        ctx.plugin(clonedPlugin, this.config[key]);
-      }
+      if (this.config[key]?.[NoRegisterSym]) continue;
+      const ctx =
+        typeof this.config[key] === 'object'
+          ? this.ctx.select(this.config[key])
+          : this.ctx;
+      const clonedPlugin = ClonePlugin(
+        plugin,
+        `${this.constructor.name}_${plugin.name}_dict_${key}`,
+        (o) => this._instanceMap.set(key, o),
+      );
+      ctx.plugin(clonedPlugin, this.config[key]);
     }
   }
 
@@ -48,6 +47,8 @@ export class MapPluginBase<M extends Dict<PluginClass>>
     delete this._instanceMap;
   }
 }
+
+const NoRegisterSym = '__no_register' as const;
 
 function MappedConfig<M extends Dict<PluginClass>>(
   dict: M,
@@ -60,10 +61,10 @@ function MappedConfig<M extends Dict<PluginClass>>(
       plugin['Config'] ||
       plugin['schema'] ||
       reflector.get('KoishiPredefineSchema', plugin);
-    SchemaProperty({ type: propertySchemaClass, default: undefined })(
-      PropertySchema.prototype,
-      key,
-    );
+    SchemaProperty({
+      type: propertySchemaClass,
+      default: { [NoRegisterSym]: true },
+    })(PropertySchema.prototype, key);
   }
   return PropertySchema;
 }
