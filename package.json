@@ -50,9 +50,9 @@
   "dependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa__router": "^8.0.11",
-    "cosmotype-decorators": "^2.0.5",
     "koishi-decorators": "^2.0.1",
     "lodash": "^4.17.21",
+    "minato-decorators": "^2.0.6",
     "reflect-metadata": "^0.1.13",
     "schemastery-gen": "^3.1.13",
     "typed-reflector": "^1.0.10"
@@ -75,7 +75,7 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "koishi": "^4.6.2",
+    "koishi": "^4.7.0",
     "schemastery": "^3.1.0"
   }
 }

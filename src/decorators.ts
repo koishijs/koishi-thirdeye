@@ -14,7 +14,7 @@ import {
   SystemInjectFun,
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';
-import { ModelClassType, ModelRegistrar } from 'cosmotype-decorators';
+import { ModelClassType, ModelRegistrar } from 'minato-decorators';
 import { ClassType } from 'schemastery-gen';
 
 // Export all koishi-decorator decorators
