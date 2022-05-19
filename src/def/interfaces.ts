@@ -1,4 +1,4 @@
-import { Context } from 'koishi';
+import { Context, Dict, Selection } from 'koishi';
 import { PluginMeta } from '../register';
 
 export * from 'koishi-decorators/dist/src/def/interfaces';
@@ -33,8 +33,6 @@ export type ParamsFromClass<T> = T extends { new (...args: infer U): any }
   ? U
   : never;
 
-export type MultiPluginConfig<Inner, Outer> = Instances<Inner> & Outer;
-
 export type PluginClass<C = any, P = any> = new (ctx: Context, config: C) => P;
 
 export type ClassPluginConfig<P extends PluginClass> = P extends PluginClass<
@@ -42,3 +40,11 @@ export type ClassPluginConfig<P extends PluginClass> = P extends PluginClass<
 >
   ? C
   : never;
+
+export type MapPluginToConfig<M extends Dict<PluginClass>> = {
+  [K in keyof M]: ClassPluginConfig<M[K]>;
+};
+
+export type MapPluginToConfigWithSelection<M extends Dict<PluginClass>> = {
+  [K in keyof M]: ClassPluginConfig<M[K]> & Selection;
+};

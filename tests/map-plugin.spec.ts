@@ -4,6 +4,7 @@ import { DefinePlugin } from '../src/register';
 import { UseCommand } from 'koishi-decorators';
 import { MapPlugin } from '../src/plugin-operators';
 import { App } from 'koishi';
+import { MergePlugin } from '../src/plugin-operators/merge-plugin';
 
 class DressConfig {
   @SchemaProperty()
@@ -47,6 +48,17 @@ class WearingPlugin extends MapPlugin(
   }
 }
 
+@DefinePlugin()
+class MergedWearingPlugin extends MergePlugin(
+  { dress: DressPlugin, skirt: SkirtPlugin },
+  WearingConfig,
+) {
+  @UseCommand('wearingStrip')
+  wearingStrip() {
+    return this.config.strip;
+  }
+}
+
 describe('register map plugin instance', () => {
   it('should work on each level', async () => {
     const app = new App();
@@ -70,5 +82,17 @@ describe('register map plugin instance', () => {
     expect(await app.command('dressColor').execute({})).toBe('red');
     expect(await app.command('wearingStrip').execute({})).toBe('pink');
     expect(await app.command('skirtSize').execute({})).toBe('S');
+  });
+  it('should work on merge plugin', async () => {
+    const app = new App();
+    app.plugin(MergedWearingPlugin, {
+      color: 'red',
+      size: 'XL',
+      strip: 'pink',
+    });
+    await app.start();
+    expect(await app.command('dressColor').execute({})).toBe('red');
+    expect(await app.command('skirtSize').execute({})).toBe('XL');
+    expect(await app.command('wearingStrip').execute({})).toBe('pink');
   });
 });
