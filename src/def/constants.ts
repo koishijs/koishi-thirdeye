@@ -19,7 +19,12 @@ export interface MetadataArrayMap {
   KoishiSystemInjectSymKeys: string;
   KoishiAddUsingList: keyof Context.Services;
   KoishiPartialUsing: keyof Context.Services;
-  KoishiIf: Condition<boolean>;
+  KoishiIf: Condition<boolean, any, [Record<string, any>]>;
+  KoishiFor: Condition<
+    Iterable<Record<string, any>>,
+    any,
+    [Record<string, any>]
+  >;
 }
 
 export interface MetadataMap {

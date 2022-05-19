@@ -15,10 +15,9 @@ export interface ProvideDefinition extends ProvideOptions {
   serviceName: keyof Context.Services;
 }
 
-export type Condition<R, T = any> = (
+export type Condition<R, T = any, Ext extends any[] = []> = (
   o: T,
-  config: T extends { config: infer C } ? C : any,
-  ctx: Context,
+  ...ext: Ext
 ) => R;
 
 export interface Instances<T> {

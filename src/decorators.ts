@@ -124,8 +124,13 @@ export const PluginSchema = (schema: Schema | ClassType<any>) =>
 export const PluginName = (name: string) =>
   Metadata.set('KoishiPredefineName', name);
 
-export const If = <T>(func: Condition<boolean, T>): MethodDecorator =>
-  Metadata.append('KoishiIf', func);
+export const If = <T>(
+  func: Condition<boolean, T, [Record<string, any>]>,
+): MethodDecorator => Metadata.append('KoishiIf', func);
+
+export const For = <T>(
+  func: Condition<Iterable<Record<string, any>>, T, [Record<string, any>]>,
+): MethodDecorator => Metadata.append('KoishiFor', func);
 
 export const UseModel = (...models: ModelClassType[]): ClassDecorator =>
   TopLevelAction((ctx) => {

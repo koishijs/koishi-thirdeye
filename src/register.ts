@@ -1,5 +1,6 @@
 import { Context, Plugin, Schema, WebSocketLayer } from 'koishi';
 import {
+  Condition,
   KoishiAddUsingList,
   KoishiPartialUsing,
   KoishiServiceInjectSym,
@@ -121,8 +122,12 @@ export function DefinePlugin<T = any>(
         }
       }
 
-      _registerDeclarationsProcess(methodKey: keyof C & string, ctx: Context) {
-        const result = this.__registrar.register(ctx, methodKey, false);
+      _registerDeclarationsProcess(
+        methodKey: keyof C & string,
+        ctx: Context,
+        view: Record<string, any> = {},
+      ) {
+        const result = this.__registrar.register(ctx, methodKey, false, view);
         if (result?.type === 'ws') {
           const layer = result.result as WebSocketLayer;
           ctx.on('dispose', () => layer.close());
@@ -134,19 +139,17 @@ export function DefinePlugin<T = any>(
         }
       }
 
-      _registerDeclarationsFor(methodKey: keyof C & string) {
+      _registerDeclarationsResolving(
+        methodKey: keyof C & string,
+        view: Record<string, any> = {},
+      ) {
+        const conditions = reflector.getArray('KoishiIf', this, methodKey);
+        if (conditions.some((condition) => !condition(this, view))) return;
         const ctx = this.__registrar.getScopeContext(
           this.__ctx,
           methodKey,
           false,
         );
-        const conditions = reflector.getArray('KoishiIf', this, methodKey);
-        if (
-          conditions.some(
-            (condition) => !condition(this, this.__config as any, this.__ctx),
-          )
-        )
-          return;
         const partialUsing = reflector.getArray(
           KoishiPartialUsing,
           this,
@@ -158,12 +161,38 @@ export function DefinePlugin<T = any>(
             name,
             using: partialUsing,
             apply: (innerCtx) =>
-              this._registerDeclarationsProcess(methodKey, innerCtx),
+              this._registerDeclarationsProcess(methodKey, innerCtx, view),
           };
           ctx.plugin(innerPlugin);
         } else {
-          this._registerDeclarationsProcess(methodKey, ctx);
+          this._registerDeclarationsProcess(methodKey, ctx, view);
         }
+      }
+
+      _registerDeclarationsWithStack(
+        methodKey: keyof C & string,
+        stack: Condition<
+          Iterable<Record<string, any>>,
+          any,
+          [Record<string, any>]
+        >[],
+        existing: Record<string, any> = {},
+      ) {
+        if (!stack.length) {
+          return this._registerDeclarationsResolving(methodKey, existing);
+        }
+        const [iter, ...rest] = stack;
+        for (const view of iter(this, existing)) {
+          this._registerDeclarationsWithStack(methodKey, rest, {
+            ...existing,
+            ...view,
+          });
+        }
+      }
+
+      _registerDeclarationsFor(methodKey: keyof C & string) {
+        const stack = reflector.getArray('KoishiFor', this, methodKey);
+        return this._registerDeclarationsWithStack(methodKey, stack);
       }
 
       _registerDeclarations() {
@@ -240,7 +269,7 @@ export function DefinePlugin<T = any>(
         this.__ctx = ctx;
         this.__config = config;
         this.__pluginOptions = options;
-        this.__registrar = new Registrar(this, originalClass);
+        this.__registrar = new Registrar(this, originalClass, config);
         this.__pluginsToWaitFor = [];
         this._initializePluginClass();
       }
