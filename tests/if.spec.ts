@@ -25,6 +25,7 @@ class MyPlugin2 extends BasePlugin<{
   commands: { name: string; return: string }[];
 }> {
   @For<MyPlugin2>(({ config }) => config.commands)
+  @If<MyPlugin2>((_, def) => def.name !== 'badthing')
   @UseCommand('{{name}}')
   onCommand(
     @PutValue('{{return}}') returnValue: string,
@@ -51,6 +52,7 @@ describe('It should register conditionally', () => {
       commands: [
         { name: 'foo', return: 'bar' },
         { name: 'bar', return: 'baz' },
+        { name: 'badthing', return: 'bad' },
       ],
       prefix: '> ',
     });
@@ -59,5 +61,6 @@ describe('It should register conditionally', () => {
     const commandBar = app.command('bar');
     expect(await commandFoo.execute({})).toBe('> bar');
     expect(await commandBar.execute({})).toBe('> baz');
+    expect(await app.command('badthing').execute({})).toBeFalsy();
   });
 });
