@@ -144,12 +144,7 @@ export function DefinePlugin<T = any>(
         view: Record<string, any> = {},
       ) {
         const conditions = reflector.getArray('KoishiIf', this, methodKey);
-        if (
-          conditions.some(
-            (condition) => !condition(this, { ...this.__config, ...view }),
-          )
-        )
-          return;
+        if (conditions.some((condition) => !condition(this, view))) return;
         const ctx = this.__registrar.getScopeContext(
           this.__ctx,
           methodKey,
