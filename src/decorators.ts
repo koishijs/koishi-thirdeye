@@ -127,12 +127,12 @@ export const PluginName = (name: string) =>
 
 export const If = <T>(
   func: Condition<boolean, T, [Record<string, any>]>,
-): TypedMethodDecorator<T> =>
+): MethodDecorator =>
   Metadata.append('KoishiControl', { type: 'if', condition: func });
 
 export const For = <T>(
   func: Condition<Iterable<Record<string, any>>, T, [Record<string, any>]>,
-): TypedMethodDecorator<T> =>
+): MethodDecorator =>
   Metadata.append('KoishiControl', { type: 'for', condition: func });
 
 export const UseModel = (...models: ModelClassType[]): ClassDecorator =>

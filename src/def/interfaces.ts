@@ -48,12 +48,6 @@ export type MapPluginToConfigWithSelection<M extends Dict<PluginClass>> = {
   [K in keyof M]: ClassPluginConfig<M[K]> & Selection;
 };
 
-export type TypedMethodDecorator<T> = <P>(
-  target: T,
-  propertyKey: string | symbol,
-  descriptor: TypedPropertyDescriptor<P>,
-) => void;
-
 export interface ControlTypeMap {
   if: boolean;
   for: Iterable<Record<string, any>>;
