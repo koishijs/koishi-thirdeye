@@ -24,7 +24,7 @@ class MyPlugin2 extends BasePlugin<{
   prefix: string;
   commands: { name: string; return: string }[];
 }> {
-  @For<MyPlugin2>(({ config }) => config.commands)
+  @For(({ config }) => config.commands)
   @If<MyPlugin2>((_, def) => def.name !== 'badthing')
   @UseCommand('{{name}}')
   onCommand(

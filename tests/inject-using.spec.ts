@@ -1,11 +1,6 @@
-import { RegisterSchema, SchemaProperty } from '..';
+import { RegisterSchema, SchemaProperty, StarterPlugin } from '..';
 import { Assets, Bot, Cache, Context } from 'koishi';
-import {
-  Inject,
-  PluginName,
-  PluginSchema,
-  UsingService,
-} from '../src/decorators';
+import { Inject, PluginName, UsingService } from '../src/decorators';
 import { DefinePlugin } from '../src/register';
 
 @RegisterSchema()
@@ -15,12 +10,11 @@ class Config {
 }
 
 describe('InjectUsing', () => {
-  @PluginSchema(Config)
   @PluginName('foo-plugin')
   @UsingService('router')
-  @DefinePlugin({ using: ['database'] })
+  @DefinePlugin({ using: ['database'], schema: Config })
   @UsingService('http')
-  class MyPlugin {
+  class MyPlugin extends StarterPlugin(Config) {
     @Inject(true)
     cache: Cache;
 

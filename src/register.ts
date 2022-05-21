@@ -8,6 +8,7 @@ import {
   KoishiServiceProvideSym,
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
+  PluginClass,
   ThirdEyeSym,
 } from './def';
 import { reflector } from './meta/meta-fetch';
@@ -18,7 +19,8 @@ import { PluginName, PluginSchema, UsingService } from './decorators';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
-  schema?: Schema<any, T> | Type<T>;
+  schema?: Schema<T> | Type<T>;
+  Config?: Schema<T> | Type<T>;
   using?: (keyof Context.Services)[];
 }
 
@@ -47,13 +49,18 @@ export interface LifecycleEvents {
   onDisconnect?(): void | Promise<void>;
 }
 
-export function DefinePlugin<T = any>(
+export function DefinePlugin<T>(
+  options?: KoishiPluginRegistrationOptions<T>,
+): <C extends PluginClass<T>>(
+  plugin: C,
+) => C & KoishiPluginRegistrationOptions<T>;
+export function DefinePlugin<T>(
   options: KoishiPluginRegistrationOptions<T> = {},
 ) {
   return function <
     C extends {
       new (...args: any[]): any;
-    } & KoishiPluginRegistrationOptions<T>,
+    },
   >(originalClass: C) {
     if (options.name) {
       PluginName(options.name)(originalClass);

@@ -12,6 +12,7 @@ import {
   KoishiSystemInjectSymKeys,
   ProvideOptions,
   SystemInjectFun,
+  TypedMethodDecorator,
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';
 import { ModelClassType, ModelRegistrar } from 'minato-decorators';
@@ -126,11 +127,11 @@ export const PluginName = (name: string) =>
 
 export const If = <T>(
   func: Condition<boolean, T, [Record<string, any>]>,
-): MethodDecorator => Metadata.append('KoishiIf', func);
+): TypedMethodDecorator<T> => Metadata.append('KoishiIf', func);
 
 export const For = <T>(
   func: Condition<Iterable<Record<string, any>>, T, [Record<string, any>]>,
-): MethodDecorator => Metadata.append('KoishiFor', func);
+): TypedMethodDecorator<T> => Metadata.append('KoishiFor', func);
 
 export const UseModel = (...models: ModelClassType[]): ClassDecorator =>
   TopLevelAction((ctx) => {

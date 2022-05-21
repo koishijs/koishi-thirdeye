@@ -47,3 +47,9 @@ export type MapPluginToConfig<M extends Dict<PluginClass>> = {
 export type MapPluginToConfigWithSelection<M extends Dict<PluginClass>> = {
   [K in keyof M]: ClassPluginConfig<M[K]> & Selection;
 };
+
+export type TypedMethodDecorator<T> = <P>(
+  target: T,
+  propertyKey: string | symbol,
+  descriptor: TypedPropertyDescriptor<P>,
+) => void;
