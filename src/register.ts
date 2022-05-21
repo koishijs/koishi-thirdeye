@@ -1,6 +1,7 @@
 import { Context, Plugin, Schema, WebSocketLayer } from 'koishi';
 import {
   Condition,
+  ControlType,
   KoishiAddUsingList,
   KoishiPartialUsing,
   KoishiServiceInjectSym,
@@ -150,8 +151,6 @@ export function DefinePlugin<T>(
         methodKey: keyof C & string,
         view: Record<string, any> = {},
       ) {
-        const conditions = reflector.getArray('KoishiIf', this, methodKey);
-        if (conditions.some((condition) => !condition(this, view))) return;
         const ctx = this.__registrar.getScopeContext(
           this.__ctx,
           methodKey,
@@ -178,27 +177,40 @@ export function DefinePlugin<T>(
 
       _registerDeclarationsWithStack(
         methodKey: keyof C & string,
-        stack: Condition<
-          Iterable<Record<string, any>>,
-          any,
-          [Record<string, any>]
-        >[],
+        stack: ControlType[],
         existing: Record<string, any> = {},
       ) {
         if (!stack.length) {
           return this._registerDeclarationsResolving(methodKey, existing);
         }
-        const [iter, ...rest] = stack;
-        for (const view of iter(this, existing)) {
-          this._registerDeclarationsWithStack(methodKey, rest, {
-            ...existing,
-            ...view,
-          });
+        const rest = [...stack];
+        const control = rest.pop();
+
+        switch (control.type) {
+          case 'if':
+            if (!(control as ControlType<'if'>).condition(this, existing))
+              return;
+            return this._registerDeclarationsWithStack(
+              methodKey,
+              rest,
+              existing,
+            );
+          case 'for':
+            for (const view of (control as ControlType<'for'>).condition(
+              this,
+              existing,
+            )) {
+              this._registerDeclarationsWithStack(methodKey, rest, {
+                ...existing,
+                ...view,
+              });
+            }
+            return;
         }
       }
 
       _registerDeclarationsFor(methodKey: keyof C & string) {
-        const stack = reflector.getArray('KoishiFor', this, methodKey);
+        const stack = reflector.getArray('KoishiControl', this, methodKey);
         return this._registerDeclarationsWithStack(methodKey, stack);
       }
 

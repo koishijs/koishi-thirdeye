@@ -1,6 +1,12 @@
 // metadatas
 import { Context, Schema } from 'koishi';
-import { Condition, ProvideDefinition, SystemInjectFun } from './interfaces';
+import {
+  Condition,
+  ControlType,
+  ControlTypeMap,
+  ProvideDefinition,
+  SystemInjectFun,
+} from './interfaces';
 import { ClassType } from 'schemastery-gen';
 
 export const KoishiServiceInjectSym = 'KoishiServiceInjectSym';
@@ -19,12 +25,7 @@ export interface MetadataArrayMap {
   KoishiSystemInjectSymKeys: string;
   KoishiAddUsingList: keyof Context.Services;
   KoishiPartialUsing: keyof Context.Services;
-  KoishiIf: Condition<boolean, any, [Record<string, any>]>;
-  KoishiFor: Condition<
-    Iterable<Record<string, any>>,
-    any,
-    [Record<string, any>]
-  >;
+  KoishiControl: ControlType;
 }
 
 export interface MetadataMap {

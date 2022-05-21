@@ -53,3 +53,15 @@ export type TypedMethodDecorator<T> = <P>(
   propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<P>,
 ) => void;
+
+export interface ControlTypeMap {
+  if: boolean;
+  for: Iterable<Record<string, any>>;
+}
+
+export interface ControlType<
+  T extends keyof ControlTypeMap = keyof ControlTypeMap,
+> {
+  type: T;
+  condition: Condition<ControlTypeMap[T], any, [Record<string, any>]>;
+}
