@@ -35,7 +35,7 @@ describe('Scope', () => {
     } as Session;
 
     app.plugin(MyClass);
-    const methodCtx = app.command('foo').context;
+    const methodCtx = app.command('foo').ctx;
 
     expect(methodCtx.filter(correctSession)).toBe(true);
     expect(methodCtx.filter(wrongSession1)).toBe(false);

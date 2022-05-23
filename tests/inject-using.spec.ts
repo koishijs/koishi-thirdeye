@@ -28,7 +28,7 @@ describe('InjectUsing', () => {
   it('Should include injected using services', () => {
     expect(MyPlugin.name).toBe('foo-plugin');
     expect(MyPlugin['Config']).toEqual(Config);
-    const usingList = (MyPlugin as any).using as (keyof Context.Services)[];
+    const usingList = (MyPlugin as any).using as ServiceName[];
     expect(usingList).toBeInstanceOf(Array);
     expect(usingList.length).toEqual(5);
     expect(usingList.includes('database')).toEqual(true);

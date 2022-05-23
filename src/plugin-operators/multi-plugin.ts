@@ -69,9 +69,7 @@ export function MultiInstancePlugin<
   const plugin = factory(outerConfig);
 
   if (innerPlugin['using']) {
-    UsingService(...(innerPlugin['using'] as (keyof Context.Services)[]))(
-      plugin,
-    );
+    UsingService(...(innerPlugin['using'] as ServiceName[]))(plugin);
   }
 
   return plugin;

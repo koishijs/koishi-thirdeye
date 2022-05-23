@@ -1,6 +1,6 @@
 import { MapPluginToConfig, PluginClass } from '../def';
 import { Dict } from 'koishi';
-import { AnyClass, ClassType, Mixin } from 'schemastery-gen';
+import { ClassType, Mixin } from 'schemastery-gen';
 import { MappingPluginBase } from './mapping-base';
 import { CreatePluginFactory } from '../plugin-factory';
 import _ from 'lodash';

@@ -60,7 +60,7 @@ class MyConsumer {
   eagerPongResult: string;
 
   @UseEvent('service')
-  async onService(name: keyof Context.Services) {
+  async onService(name: ServiceName) {
     if (name === 'myProvider') {
       this.pongResult = this.myProvider.ping();
     } else if (name === 'myEagerProvider') {
@@ -83,7 +83,7 @@ class MyUsingConsumer {
   eagerPongResult: string;
 
   @UseEvent('service')
-  async onService(name: keyof Context.Services) {
+  async onService(name: ServiceName) {
     if (name === 'myProvider') {
       this.pongResult = this.myProvider.ping();
     } else if (name === 'myEagerProvider') {

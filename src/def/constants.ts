@@ -1,12 +1,6 @@
 // metadatas
 import { Context, Schema } from 'koishi';
-import {
-  Condition,
-  ControlType,
-  ControlTypeMap,
-  ProvideDefinition,
-  SystemInjectFun,
-} from './interfaces';
+import { ControlType, ProvideDefinition, SystemInjectFun } from './interfaces';
 import { ClassType } from 'schemastery-gen';
 
 export const KoishiServiceInjectSym = 'KoishiServiceInjectSym';
@@ -23,13 +17,13 @@ export interface MetadataArrayMap {
   KoishiServiceProvideSym: ProvideDefinition;
   KoishiServiceInjectSymKeys: string;
   KoishiSystemInjectSymKeys: string;
-  KoishiAddUsingList: keyof Context.Services;
-  KoishiPartialUsing: keyof Context.Services;
+  KoishiAddUsingList: ServiceName;
+  KoishiPartialUsing: ServiceName;
   KoishiControl: ControlType;
 }
 
 export interface MetadataMap {
-  KoishiServiceInjectSym: keyof Context.Services;
+  KoishiServiceInjectSym: ServiceName;
   KoishiSystemInjectSym: SystemInjectFun;
   KoishiPredefineSchema: Schema | ClassType<any>;
   KoishiPredefineName: string;

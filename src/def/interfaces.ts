@@ -7,12 +7,14 @@ export * from 'koishi-decorators/dist/src/def/interfaces';
 
 export type SystemInjectFun = <T = any>(obj: PluginMeta<T>) => any;
 
-export interface ProvideOptions {
+export type ServiceName = keyof Context;
+
+export interface ProvideOptions extends Context.ServiceOptions {
   immediate?: boolean;
 }
 
 export interface ProvideDefinition extends ProvideOptions {
-  serviceName: keyof Context.Services;
+  serviceName: ServiceName;
 }
 
 export type Condition<R, T = any, Ext extends any[] = []> = (

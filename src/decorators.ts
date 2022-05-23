@@ -12,7 +12,6 @@ import {
   KoishiSystemInjectSymKeys,
   ProvideOptions,
   SystemInjectFun,
-  TypedMethodDecorator,
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';
 import { ModelClassType, ModelRegistrar } from 'minato-decorators';
@@ -27,14 +26,14 @@ export { PluginDef } from 'koishi-decorators';
 // Service API
 
 export function Inject(
-  name?: keyof Context.Services,
+  name?: ServiceName,
   addUsing?: boolean,
 ): PropertyDecorator;
 export function Inject(addUsing?: boolean): PropertyDecorator;
 export function Inject(
-  ...args: [(keyof Context.Services | boolean)?, boolean?]
+  ...args: [(ServiceName | boolean)?, boolean?]
 ): PropertyDecorator {
-  let name: keyof Context.Services;
+  let name: ServiceName;
   let addUsing = false;
   if (args.length === 1) {
     if (typeof args[0] === 'boolean') {
@@ -43,7 +42,7 @@ export function Inject(
       name = args[0];
     }
   } else if (args.length >= 2) {
-    name = args[0] as keyof Context.Services;
+    name = args[0] as ServiceName;
     addUsing = args[1];
   }
   return (obj, key) => {
@@ -59,7 +58,7 @@ export function Inject(
         return dec(obj, key);
       }
     }
-    const serviceName = name || (key as keyof Context.Services);
+    const serviceName = name || (key as ServiceName);
     if (addUsing) {
       Metadata.appendUnique(KoishiAddUsingList, serviceName)(obj.constructor);
     }
@@ -73,10 +72,10 @@ export function Inject(
 }
 
 export function Provide(
-  name: keyof Context.Services,
+  name: ServiceName,
   options?: ProvideOptions,
 ): ClassDecorator {
-  Context.service(name);
+  Context.service(name, options);
   return Metadata.append(KoishiServiceProvideSym, {
     ...options,
     serviceName: name,
@@ -105,7 +104,7 @@ export const Caller = () =>
   });
 
 export function UsingService(
-  ...services: (keyof Context.Services)[]
+  ...services: ServiceName[]
 ): ClassDecorator & MethodDecorator {
   return (obj, key?) => {
     for (const service of services) {

@@ -1,6 +1,5 @@
 import { Context, Plugin, Schema, WebSocketLayer } from 'koishi';
 import {
-  Condition,
   ControlType,
   KoishiAddUsingList,
   KoishiPartialUsing,
@@ -22,7 +21,7 @@ export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
   schema?: Schema<T> | Type<T>;
   Config?: Schema<T> | Type<T>;
-  using?: (keyof Context.Services)[];
+  using?: ServiceName[];
 }
 
 export interface PluginMeta<T = any> {
@@ -124,6 +123,8 @@ export function DefinePlugin<T>(
               return this.__ctx[name];
             },
             set: (val: any) => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               this.__ctx[name] = val;
             },
           });
@@ -234,6 +235,8 @@ export function DefinePlugin<T>(
           (serviceDef) => !serviceDef.immediate === !immediate,
         );
         for (const key of providingServices) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           this.__ctx[key.serviceName] = this as any;
         }
       }
@@ -242,6 +245,8 @@ export function DefinePlugin<T>(
         const providingServices = this._getProvidingServices();
         for (const key of providingServices) {
           if (this.__ctx[key.serviceName] === (this as never)) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             this.__ctx[key.serviceName] = null;
           }
         }
