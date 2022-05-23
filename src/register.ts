@@ -9,6 +9,7 @@ import {
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
   PluginClass,
+  ServiceName,
   ThirdEyeSym,
 } from './def';
 import { reflector } from './meta/meta-fetch';

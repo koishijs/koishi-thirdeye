@@ -2,6 +2,7 @@ import { App, Context } from 'koishi';
 import { DefinePlugin } from '../src/register';
 import { Inject, Provide, UseEvent, UsingService } from '../src/decorators';
 import { BasePlugin } from '../src/base-plugin';
+import { ServiceName } from '../src/def';
 
 declare module 'koishi' {
   // eslint-disable-next-line @typescript-eslint/no-namespace

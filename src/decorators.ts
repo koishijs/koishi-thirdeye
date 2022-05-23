@@ -11,6 +11,7 @@ import {
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
   ProvideOptions,
+  ServiceName,
   SystemInjectFun,
 } from './def';
 import { TopLevelAction } from 'koishi-decorators';

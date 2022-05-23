@@ -2,6 +2,7 @@ import { RegisterSchema, SchemaProperty, StarterPlugin } from '..';
 import { Assets, Bot, Cache, Context } from 'koishi';
 import { Inject, PluginName, UsingService } from '../src/decorators';
 import { DefinePlugin } from '../src/register';
+import { ServiceName } from '../src/def';
 
 @RegisterSchema()
 class Config {
