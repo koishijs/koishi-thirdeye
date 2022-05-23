@@ -1,6 +1,11 @@
 // metadatas
 import { Context, Schema } from 'koishi';
-import { ControlType, ProvideDefinition, SystemInjectFun } from './interfaces';
+import {
+  ControlType,
+  ProvideDefinition,
+  ServiceName,
+  SystemInjectFun,
+} from './interfaces';
 import { ClassType } from 'schemastery-gen';
 
 export const KoishiServiceInjectSym = 'KoishiServiceInjectSym';

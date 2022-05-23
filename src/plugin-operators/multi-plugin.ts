@@ -5,6 +5,7 @@ import {
   ClassPluginConfig,
   Instances,
   PluginClass,
+  ServiceName,
   TypeFromClass,
 } from '../def';
 import { ClassType } from 'schemastery-gen';
