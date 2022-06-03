@@ -10,6 +10,7 @@ import {
   KoishiServiceProvideSym,
   KoishiSystemInjectSym,
   KoishiSystemInjectSymKeys,
+  PluginClass,
   ProvideOptions,
   ServiceName,
   SystemInjectFun,
@@ -98,6 +99,7 @@ export const InjectApp = () => InjectSystem((obj) => obj.__ctx.app);
 export const InjectConfig = () => InjectSystem((obj) => obj.__config);
 export const InjectLogger = (name?: string) =>
   InjectSystem((obj) => obj.__ctx.logger(name || obj.constructor.name));
+export const InjectParent = () => InjectSystem((obj) => obj.__ctx.__parent);
 export const Caller = () =>
   InjectSystem((obj) => {
     const targetCtx: Context = obj[Context.current] || obj.__ctx;
@@ -151,3 +153,6 @@ export const MixinModel = <K extends Keys<Tables>>(
     const registrar = new ModelRegistrar(ctx.model);
     registrar.mixinModel(tableName, classDict);
   });
+
+export const Fork = (forkPlugin: PluginClass) =>
+  Metadata.set('KoishiFork', forkPlugin);

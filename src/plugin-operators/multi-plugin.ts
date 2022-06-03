@@ -47,6 +47,7 @@ export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
     delete this.instances;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onApply() {}
 }
 

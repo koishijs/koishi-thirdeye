@@ -30,7 +30,7 @@ export interface PluginMeta<T = any> {
   __config: T;
   __registrar: Registrar;
   __pluginOptions: KoishiPluginRegistrationOptions<T>;
-  __forkInstances: any[];
+  __promisesToWaitFor: Promise<void>[];
 }
 
 export interface OnApply {
@@ -49,6 +49,14 @@ export interface LifecycleEvents {
   onApply?(): void;
   onConnect?(): void | Promise<void>;
   onDisconnect?(): void | Promise<void>;
+  onFork?(instance: any): void | Promise<void>;
+  onForkDisconnect?(instance: any): void | Promise<void>;
+}
+
+declare module 'koishi' {
+  interface Context {
+    __parent?: any;
+  }
 }
 
 export function DefinePlugin<T>(
@@ -78,24 +86,25 @@ export function DefinePlugin<T>(
     }
     const newClass = class extends originalClass implements PluginMeta {
       static get Config() {
-        const schemaType =
-          reflector.get('KoishiPredefineSchema', newClass) ||
-          reflector.get('KoishiPredefineSchema', originalClass);
+        const schemaType = reflector.get('KoishiPredefineSchema', newClass);
         return schemaType ? SchemaClass(schemaType) : undefined;
       }
 
       static get using() {
-        const list = reflector
-          .getArray(KoishiAddUsingList, originalClass)
-          .concat(reflector.getArray(KoishiAddUsingList, newClass));
+        const list = reflector.getArray(KoishiAddUsingList, newClass);
         return _.uniq(list);
       }
+
+      static get reusable() {
+        const fork = reflector.get('KoishiFork', newClass);
+        return !!fork;
+      }
+
       __ctx: Context;
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
       __registrar: Registrar;
       __promisesToWaitFor: Promise<void>[];
-      __forkInstances: any[];
 
       _handleSystemInjections() {
         const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
@@ -228,10 +237,7 @@ export function DefinePlugin<T>(
       }
 
       _getProvidingServices() {
-        return [
-          ...reflector.getArray(KoishiServiceProvideSym, originalClass),
-          ...reflector.getArray(KoishiServiceProvideSym, this),
-        ];
+        return reflector.getArray(KoishiServiceProvideSym, this);
       }
 
       _handleServiceProvide(immediate: boolean) {
@@ -275,6 +281,29 @@ export function DefinePlugin<T>(
         });
       }
 
+      _initializeFork() {
+        let fork = reflector.get('KoishiFork', this);
+        if (!fork) {
+          return;
+        }
+        if (!fork[ThirdEyeSym]) {
+          fork = DefinePlugin()(fork);
+        }
+        this.__ctx.on('fork', (ctx, options) => {
+          ctx.__parent = this;
+          const instance = new fork(ctx, options);
+          ctx.on('dispose', () => {
+            if (typeof this.onForkDisconnect === 'function') {
+              this.onForkDisconnect(instance);
+            }
+            delete ctx.__parent;
+          });
+          if (typeof this.onFork === 'function') {
+            this.onFork(instance);
+          }
+        });
+      }
+
       _initializePluginClass() {
         this._handleSystemInjections();
         this._handleServiceInjections();
@@ -284,20 +313,19 @@ export function DefinePlugin<T>(
           this.onApply();
         }
         this._handleServiceProvide(true);
+        this._initializeFork();
         this._registerAfterInit();
       }
 
       constructor(...args: any[]) {
         const originalCtx: Context = args[0];
         const config = args[1];
-        const ctx = new Registrar(originalClass, newClass).getScopeContext(
-          originalCtx,
-        );
+        const ctx = new Registrar(newClass).getScopeContext(originalCtx);
         super(ctx, config, ...args.slice(2));
         this.__ctx = ctx;
         this.__config = config;
         this.__pluginOptions = options;
-        this.__registrar = new Registrar(this, originalClass, config);
+        this.__registrar = new Registrar(this, undefined, config);
         this.__promisesToWaitFor = [];
         this._initializePluginClass();
       }
@@ -306,9 +334,7 @@ export function DefinePlugin<T>(
       enumerable: true,
       configurable: true,
       get: () =>
-        reflector.get('KoishiPredefineName', newClass) ||
-        reflector.get('KoishiPredefineName', originalClass) ||
-        originalClass.name,
+        reflector.get('KoishiPredefineName', newClass) || originalClass.name,
     });
     newClass[ThirdEyeSym] = true;
     return newClass;

@@ -7,7 +7,7 @@ export * from 'koishi-decorators/dist/src/def/interfaces';
 
 export type SystemInjectFun = <T = any>(obj: PluginMeta<T>) => any;
 
-export type ServiceName = keyof Context;
+export type ServiceName = keyof Context | string;
 
 export interface ProvideOptions extends Context.ServiceOptions {
   immediate?: boolean;
@@ -42,6 +42,9 @@ export type ClassPluginConfig<P extends PluginClass> = P extends PluginClass<
   ? C
   : never;
 
+export type ExactClassPluginConfig<P extends PluginClass> =
+  P extends PluginClass<any, { config: infer IC }> ? IC : ClassPluginConfig<P>;
+
 export type MapPluginToConfig<M extends Dict<PluginClass>> = {
   [K in keyof M]: ClassPluginConfig<M[K]>;
 };
@@ -61,3 +64,5 @@ export interface ControlType<
   type: T;
   condition: Condition<ControlTypeMap[T], any, [Record<string, any>]>;
 }
+
+export type Prop<T> = T;

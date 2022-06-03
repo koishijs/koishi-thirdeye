@@ -2,6 +2,7 @@
 import { Context, Schema } from 'koishi';
 import {
   ControlType,
+  PluginClass,
   ProvideDefinition,
   ServiceName,
   SystemInjectFun,
@@ -32,6 +33,7 @@ export interface MetadataMap {
   KoishiSystemInjectSym: SystemInjectFun;
   KoishiPredefineSchema: Schema | ClassType<any>;
   KoishiPredefineName: string;
+  KoishiFork: PluginClass;
 }
 
 export const ThirdEyeSym = Symbol('ThirdEyeSym');
