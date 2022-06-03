@@ -11,6 +11,7 @@ import {
   InjectLogger,
   Provide,
 } from '../src/decorators';
+import { BasePlugin } from '../src/base-plugin';
 
 declare module 'koishi' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -33,10 +34,10 @@ class NonImmediateDependency {}
 
 @Provide('myPlugin', { immediate: true })
 @DefinePlugin()
-class TestingBase implements OnConnect, OnDisconnect, OnApply {
-  @InjectContext()
-  ctx: Context;
-
+class TestingBase
+  extends BasePlugin<any>
+  implements OnConnect, OnDisconnect, OnApply
+{
   @InjectLogger()
   logger: Logger;
 
@@ -69,13 +70,14 @@ class MyPlugin3 extends TestingBase {
   nonImmediateDependency: NonImmediateDependency;
 }
 
-async function RunApplyTest(app: App) {
+async function RunApplyTest(app: App, plugin: any) {
+  app.plugin(plugin);
   await app.start();
   const myPlugin = app.myPlugin;
   expect(myPlugin.applied).toBe(true);
   expect(myPlugin.connected).toBe(true);
   expect(myPlugin.disconnected).toBe(false);
-  await myPlugin.ctx.dispose();
+  app.dispose(plugin);
   expect(myPlugin.disconnected).toBe(true);
   expect(app.immediateDependency).toBeDefined();
   expect(app.nonImmediateDependency).toBeDefined();
@@ -91,20 +93,13 @@ describe('Apply and Connect in koishi-thirdeye', () => {
   });
 
   it('should be applied and connected', async () => {
-    app.plugin(MyPlugin);
-    const myPlugin = app.myPlugin;
-    expect(myPlugin.applied).toBe(true);
-    expect(myPlugin.connected).toBe(false);
-    expect(myPlugin.disconnected).toBe(false);
-    await RunApplyTest(app);
+    await RunApplyTest(app, MyPlugin);
   });
   it('should be applied and connected with immediate dependency', async () => {
-    app.plugin(MyPlugin2);
-    await RunApplyTest(app);
+    await RunApplyTest(app, MyPlugin2);
   });
   it('should be applied and connected with non-immediate dependency', async () => {
-    app.plugin(MyPlugin3);
-    await RunApplyTest(app);
+    await RunApplyTest(app, MyPlugin3);
   });
 
   it('should name logger correctly', () => {

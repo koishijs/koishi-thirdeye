@@ -30,6 +30,7 @@ export interface PluginMeta<T = any> {
   __config: T;
   __registrar: Registrar;
   __pluginOptions: KoishiPluginRegistrationOptions<T>;
+  __forkInstances: any[];
 }
 
 export interface OnApply {
@@ -93,7 +94,8 @@ export function DefinePlugin<T>(
       __config: T;
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
       __registrar: Registrar;
-      __pluginsToWaitFor: Promise<void>[];
+      __promisesToWaitFor: Promise<void>[];
+      __forkInstances: any[];
 
       _handleSystemInjections() {
         const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
@@ -138,13 +140,14 @@ export function DefinePlugin<T>(
         view: Record<string, any> = {},
       ) {
         const result = this.__registrar.register(ctx, methodKey, false, view);
-        if (result?.type === 'ws') {
+        const type = result?.type;
+        if (type === 'ws') {
           const layer = result.result as WebSocketLayer;
           ctx.on('dispose', () => layer.close());
-        } else if (result?.type === 'plugin') {
+        } else if (type === 'apply' || type === 'plugin') {
           const mayBePromise = result.result;
           if (mayBePromise instanceof Promise) {
-            this.__pluginsToWaitFor.push(mayBePromise);
+            this.__promisesToWaitFor.push(mayBePromise);
           }
         }
       }
@@ -255,9 +258,9 @@ export function DefinePlugin<T>(
 
       _registerAfterInit() {
         this.__ctx.on('ready', async () => {
-          if (this.__pluginsToWaitFor.length) {
-            await Promise.all(this.__pluginsToWaitFor);
-            this.__pluginsToWaitFor = [];
+          if (this.__promisesToWaitFor.length) {
+            await Promise.all(this.__promisesToWaitFor);
+            this.__promisesToWaitFor = [];
           }
           if (typeof this.onConnect === 'function') {
             await this.onConnect();
@@ -295,7 +298,7 @@ export function DefinePlugin<T>(
         this.__config = config;
         this.__pluginOptions = options;
         this.__registrar = new Registrar(this, originalClass, config);
-        this.__pluginsToWaitFor = [];
+        this.__promisesToWaitFor = [];
         this._initializePluginClass();
       }
     };

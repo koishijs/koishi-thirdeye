@@ -3,7 +3,7 @@ import { PluginClass } from '../../def';
 import { BasePlugin, PartialDeep } from '../../base-plugin';
 import { LifecycleEvents } from '../../register';
 import { ClonePlugin } from '../../utility/clone-plugin';
-import { UseEvent } from 'koishi-decorators';
+import { Apply, UseEvent } from 'koishi-decorators';
 
 export class MappingPluginBase<
     M extends Dict<PluginClass>,
@@ -26,7 +26,8 @@ export class MappingPluginBase<
     return {};
   }
 
-  onApply() {
+  @Apply()
+  _registerInstances() {
     const dict = this._getDict();
     for (const [key, plugin] of Object.entries(dict)) {
       const config = this._getPluginConfig(key);
@@ -41,6 +42,8 @@ export class MappingPluginBase<
       ctx.plugin(clonedPlugin, config);
     }
   }
+
+  onApply() {}
 
   @UseEvent('dispose')
   _onThingsDispose() {

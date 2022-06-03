@@ -12,7 +12,7 @@ import { ClassType } from 'schemastery-gen';
 import { ToInstancesConfig } from '../utility/to-instance-config';
 import Schema from 'schemastery';
 import { UsingService } from '../decorators';
-import { UseEvent } from 'koishi-decorators';
+import { Apply, UseEvent } from 'koishi-decorators';
 import { CreatePluginFactory } from '../plugin-factory';
 import { LifecycleEvents } from '../register';
 
@@ -29,6 +29,7 @@ export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
     throw new Error(`Not implemented`);
   }
 
+  @Apply()
   _registerInstances() {
     const innerPlugin = this._getInnerPlugin();
     for (let i = 0; i < this.config.instances.length; i++) {
@@ -46,9 +47,7 @@ export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
     delete this.instances;
   }
 
-  onApply() {
-    this._registerInstances();
-  }
+  onApply() {}
 }
 
 export function MultiInstancePlugin<
