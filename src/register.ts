@@ -23,6 +23,7 @@ export interface KoishiPluginRegistrationOptions<T = any> {
   schema?: Schema<T> | Type<T>;
   Config?: Schema<T> | Type<T>;
   using?: ServiceName[];
+  reusable?: boolean;
 }
 
 export interface PluginMeta<T = any> {
