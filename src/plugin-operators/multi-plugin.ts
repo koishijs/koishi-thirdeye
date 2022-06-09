@@ -1,5 +1,5 @@
 import { ClonePlugin } from '../utility/clone-plugin';
-import { Context } from 'koishi';
+import { Selection } from 'koishi';
 import { BasePlugin } from '../base-plugin';
 import {
   ClassPluginConfig,
@@ -19,7 +19,7 @@ import { LifecycleEvents } from '../register';
 export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
   extends BasePlugin<
     Instances<ClassPluginConfig<InnerPlugin>>,
-    Instances<ClassPluginConfig<InnerPlugin>>
+    Instances<ClassPluginConfig<InnerPlugin> & Selection>
   >
   implements LifecycleEvents
 {
@@ -38,7 +38,8 @@ export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
         `${this.constructor.name}_${innerPlugin.name}_instance_${i}`,
         (instance) => this.instances.push(instance),
       );
-      this.ctx.plugin(clonedInnerPlugin, this.config.instances[i]);
+      const instanceConfig = this.config.instances[i];
+      this.ctx.select(instanceConfig).plugin(clonedInnerPlugin, instanceConfig);
     }
   }
 
