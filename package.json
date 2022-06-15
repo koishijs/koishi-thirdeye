@@ -75,7 +75,7 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "koishi": "^4.7.3",
+    "koishi": "^4.7.4",
     "schemastery": "^3.4.3"
   }
 }

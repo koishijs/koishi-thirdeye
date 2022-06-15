@@ -5,7 +5,10 @@ export * from 'koishi-decorators/dist/src/def/interfaces';
 
 // Command stuff
 
-export type SystemInjectFun = <T = any>(obj: PluginMeta<T>) => any;
+export type SystemInjectFun = <T = any>(
+  obj: PluginMeta<T>,
+  cl: PluginClass,
+) => any;
 
 export type ServiceName = keyof Context | string;
 

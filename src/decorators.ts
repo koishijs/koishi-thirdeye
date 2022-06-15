@@ -98,7 +98,7 @@ export const InjectContext = (select?: Selection) =>
 export const InjectApp = () => InjectSystem((obj) => obj.__ctx.app);
 export const InjectConfig = () => InjectSystem((obj) => obj.__config);
 export const InjectLogger = (name?: string) =>
-  InjectSystem((obj) => obj.__ctx.logger(name || obj.constructor.name));
+  InjectSystem((obj, cl) => obj.__ctx.logger(name || cl.name));
 export const InjectParent = () => InjectSystem((obj) => obj.__ctx.__parent);
 export const Caller = () =>
   InjectSystem((obj) => {

@@ -117,7 +117,7 @@ export function DefinePlugin<T>(
           Object.defineProperty(this, key, {
             configurable: true,
             enumerable: true,
-            get: () => valueFunction(this),
+            get: () => valueFunction(this, newClass),
           });
         }
       }
