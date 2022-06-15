@@ -155,7 +155,7 @@ export function DefinePlugin<T>(
           const layer = result.result as WebSocketLayer;
           ctx.on('dispose', () => layer.close());
         } else {
-          const mayBePromise = result.result;
+          const mayBePromise = result?.result;
           if (mayBePromise instanceof Promise) {
             this.__promisesToWaitFor.push(mayBePromise);
           }
