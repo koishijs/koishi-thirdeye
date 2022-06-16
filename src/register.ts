@@ -1,8 +1,7 @@
-import { Context, Plugin, Schema, WebSocketLayer } from 'koishi';
+import { Context, Schema, WebSocketLayer } from 'koishi';
 import {
   ControlType,
   KoishiAddUsingList,
-  KoishiPartialUsing,
   KoishiServiceInjectSym,
   KoishiServiceInjectSymKeys,
   KoishiServiceProvideSym,
@@ -171,23 +170,14 @@ export function DefinePlugin<T>(
           methodKey,
           false,
         );
-        const partialUsing = reflector.getArray(
-          KoishiPartialUsing,
-          this,
-          methodKey,
-        );
-        if (partialUsing.length) {
-          const name = `${newClass.name}-${methodKey}`;
-          const innerPlugin: Plugin.Object = {
-            name,
-            using: partialUsing,
-            apply: (innerCtx) =>
+        return this.__registrar
+          .runLayers(
+            ctx,
+            (innerCtx) =>
               this._registerDeclarationsProcess(methodKey, innerCtx, view),
-          };
-          ctx.plugin(innerPlugin);
-        } else {
-          this._registerDeclarationsProcess(methodKey, ctx, view);
-        }
+            methodKey,
+          )
+          .subscribe();
       }
 
       _registerDeclarationsWithStack(

@@ -1,5 +1,5 @@
 // metadatas
-import { Context, Schema } from 'koishi';
+import { Schema } from 'koishi';
 import {
   ControlType,
   PluginClass,
@@ -15,7 +15,6 @@ export const KoishiServiceProvideSym = 'KoishiServiceProvideSym';
 export const KoishiSystemInjectSym = 'KoishiSystemInjectSym';
 export const KoishiSystemInjectSymKeys = 'KoishiSystemInjectSymKeys';
 export const KoishiAddUsingList = 'KoishiAddUsingList';
-export const KoishiPartialUsing = 'KoishiPartialUsing';
 
 // metadata map
 
@@ -24,7 +23,6 @@ export interface MetadataArrayMap {
   KoishiServiceInjectSymKeys: string;
   KoishiSystemInjectSymKeys: string;
   KoishiAddUsingList: ServiceName;
-  KoishiPartialUsing: ServiceName;
   KoishiControl: ControlType;
 }
 

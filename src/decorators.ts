@@ -4,7 +4,6 @@ import { Metadata } from './meta/metadata.decorators';
 import {
   Condition,
   KoishiAddUsingList,
-  KoishiPartialUsing,
   KoishiServiceInjectSym,
   KoishiServiceInjectSymKeys,
   KoishiServiceProvideSym,
@@ -15,7 +14,7 @@ import {
   ServiceName,
   SystemInjectFun,
 } from './def';
-import { TopLevelAction } from 'koishi-decorators';
+import { CallbackLayer, TopLevelAction } from 'koishi-decorators';
 import { ModelClassType, ModelRegistrar } from 'minato-decorators';
 import { ClassType } from 'schemastery-gen';
 
@@ -98,7 +97,7 @@ export const InjectContext = (select?: Selection) =>
 export const InjectApp = () => InjectSystem((obj) => obj.__ctx.app);
 export const InjectConfig = () => InjectSystem((obj) => obj.__config);
 export const InjectLogger = (name?: string) =>
-  InjectSystem((obj, cl) => obj.__ctx.logger(name || cl.name));
+  InjectSystem((obj) => obj.__ctx.logger(name || obj.constructor.name));
 export const InjectParent = () => InjectSystem((obj) => obj.__ctx.__parent);
 export const Caller = () =>
   InjectSystem((obj) => {
@@ -109,13 +108,20 @@ export const Caller = () =>
 export function UsingService(
   ...services: ServiceName[]
 ): ClassDecorator & MethodDecorator {
-  return (obj, key?) => {
+  return (obj, key?, des?) => {
     for (const service of services) {
       if (!key) {
         // fallback to KoishiAddUsingList
         Metadata.appendUnique(KoishiAddUsingList, service)(obj);
       } else {
-        Metadata.appendUnique(KoishiPartialUsing, service)(obj, key);
+        const dec = CallbackLayer((ctx, cb) => {
+          ctx.plugin({
+            name: `${ctx.state.id}_${key.toString()}`,
+            using: services,
+            apply: cb,
+          });
+        });
+        dec(obj, key, des);
       }
     }
   };
