@@ -155,13 +155,9 @@ describe('On service', () => {
     //expect(app.myUsingConsumer.pongResult).toBe('pong');
   });
 
-  /*
   it('Should handle partial using deps', async () => {
     Context.service('dummyProvider');
     app = new App();
-    app.on('service', (name) => {
-      console.log('service', name);
-    });
     await app.start();
     app.plugin(MyPartialConsumer);
     expect(app.myPartialConsumer).toBeDefined();
@@ -177,5 +173,4 @@ describe('On service', () => {
     expect(await app.waterfall('pang', 'hi')).toEqual('pang: hi');
     expect(await app.waterfall('pong', 'hi')).toEqual('pong: hi');
   });
-   */
 });
