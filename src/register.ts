@@ -31,6 +31,7 @@ export interface PluginMeta<T = any> {
   __registrar: Registrar;
   __pluginOptions: KoishiPluginRegistrationOptions<T>;
   __promisesToWaitFor: Promise<void>[];
+  __disposables: (() => void)[];
 }
 
 export interface OnApply {
@@ -105,6 +106,7 @@ export function DefinePlugin<T>(
       __pluginOptions: KoishiPluginRegistrationOptions<T>;
       __registrar: Registrar;
       __promisesToWaitFor: Promise<void>[];
+      __disposables: (() => void)[];
 
       _handleSystemInjections() {
         const injectKeys = reflector.getArray(KoishiSystemInjectSymKeys, this);
@@ -170,7 +172,7 @@ export function DefinePlugin<T>(
           methodKey,
           false,
         );
-        return this.__registrar
+        const sub = this.__registrar
           .runLayers(
             ctx,
             (innerCtx) =>
@@ -178,6 +180,7 @@ export function DefinePlugin<T>(
             methodKey,
           )
           .subscribe();
+        this.__disposables.push(() => sub.unsubscribe());
       }
 
       _registerDeclarationsWithStack(
@@ -269,6 +272,13 @@ export function DefinePlugin<T>(
           if (typeof this.onDisconnect === 'function') {
             await this.onDisconnect();
           }
+          this.__disposables.forEach((dispose) => dispose());
+          delete this.__ctx;
+          delete this.__config;
+          delete this.__pluginOptions;
+          delete this.__registrar;
+          delete this.__promisesToWaitFor;
+          delete this.__disposables;
         });
       }
 
@@ -318,6 +328,7 @@ export function DefinePlugin<T>(
         this.__pluginOptions = options;
         this.__registrar = new Registrar(this, undefined, config);
         this.__promisesToWaitFor = [];
+        this.__disposables = [];
         this._initializePluginClass();
       }
     };
