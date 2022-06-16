@@ -146,8 +146,8 @@ export function DefinePlugin<T>(
       }
 
       _registerDeclarationsProcess(
-        methodKey: keyof C & string,
         ctx: Context,
+        methodKey: keyof C & string,
         view: Record<string, any> = {},
       ) {
         const result = this.__registrar.register(ctx, methodKey, false, view);
@@ -163,33 +163,14 @@ export function DefinePlugin<T>(
         }
       }
 
-      _registerDeclarationsResolving(
-        methodKey: keyof C & string,
-        view: Record<string, any> = {},
-      ) {
-        const ctx = this.__registrar.getScopeContext(
-          this.__ctx,
-          methodKey,
-          false,
-        );
-        const sub = this.__registrar
-          .runLayers(
-            ctx,
-            (innerCtx) =>
-              this._registerDeclarationsProcess(methodKey, innerCtx, view),
-            methodKey,
-          )
-          .subscribe();
-        this.__disposables.push(() => sub.unsubscribe());
-      }
-
       _registerDeclarationsWithStack(
+        ctx: Context,
         methodKey: keyof C & string,
         stack: ControlType[],
         existing: Record<string, any> = {},
       ) {
         if (!stack.length) {
-          return this._registerDeclarationsResolving(methodKey, existing);
+          return this._registerDeclarationsProcess(ctx, methodKey, existing);
         }
         const rest = [...stack];
         const control = rest.pop();
@@ -199,6 +180,7 @@ export function DefinePlugin<T>(
             if (!(control as ControlType<'if'>).condition(this, existing))
               return;
             return this._registerDeclarationsWithStack(
+              ctx,
               methodKey,
               rest,
               existing,
@@ -208,7 +190,7 @@ export function DefinePlugin<T>(
               this,
               existing,
             )) {
-              this._registerDeclarationsWithStack(methodKey, rest, {
+              this._registerDeclarationsWithStack(ctx, methodKey, rest, {
                 ...existing,
                 ...view,
               });
@@ -217,17 +199,35 @@ export function DefinePlugin<T>(
         }
       }
 
-      _registerDeclarationsFor(methodKey: keyof C & string) {
+      _registerDeclarationsFor(ctx: Context, methodKey: keyof C & string) {
+        const scopeCtx = this.__registrar.getScopeContext(
+          this.__ctx,
+          methodKey,
+          false,
+        );
         const stack = reflector.getArray('KoishiControl', this, methodKey);
-        return this._registerDeclarationsWithStack(methodKey, stack);
+        const sub = this.__registrar
+          .runLayers(
+            scopeCtx,
+            (innerCtx) =>
+              this._registerDeclarationsWithStack(innerCtx, methodKey, stack),
+            methodKey,
+          )
+          .subscribe();
+        scopeCtx.on('dispose', () => sub.unsubscribe());
       }
 
       _registerDeclarations() {
         const methodKeys =
           this.__registrar.getAllFieldsToRegister() as (keyof C & string)[];
-        methodKeys.forEach((methodKey) =>
-          this._registerDeclarationsFor(methodKey),
-        );
+        const sub = this.__registrar
+          .runLayers(this.__ctx, (innerCtx) =>
+            methodKeys.forEach((methodKey) =>
+              this._registerDeclarationsFor(innerCtx, methodKey),
+            ),
+          )
+          .subscribe();
+        this.__disposables.push(() => sub.unsubscribe());
       }
 
       _getProvidingServices() {
