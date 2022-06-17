@@ -92,7 +92,11 @@ export function DefinePlugin<T>(
       }
 
       static get using() {
-        const list = reflector.getArray(KoishiAddUsingList, newClass);
+        let list = reflector.getArray(KoishiAddUsingList, newClass);
+        const fork = reflector.get('KoishiFork', newClass);
+        if (fork) {
+          list = [...list, ...reflector.getArray(KoishiAddUsingList, fork)];
+        }
         return _.uniq(list);
       }
 
