@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { App, Context, Flatten, Keys, Schema, Selection, Tables } from 'koishi';
+import { App, Context, Flatten, Keys, Schema, Tables } from 'koishi';
 import { Metadata } from './meta/metadata.decorators';
 import {
   Condition,
@@ -14,7 +14,12 @@ import {
   ServiceName,
   SystemInjectFun,
 } from './def';
-import { CallbackLayer, TopLevelAction } from 'koishi-decorators';
+import {
+  CallbackLayer,
+  TopLevelAction,
+  Selection,
+  selectContext,
+} from 'koishi-decorators';
 import { ModelClassType, ModelRegistrar } from 'minato-decorators';
 import { ClassType } from 'schemastery-gen';
 
@@ -89,7 +94,7 @@ const InjectSystem = (fun: SystemInjectFun) =>
 export const InjectContext = (select?: Selection) =>
   InjectSystem((obj) => {
     if (select) {
-      return obj.__ctx.select(select);
+      return selectContext(obj.__ctx, select);
     } else {
       return obj.__ctx;
     }
@@ -116,7 +121,7 @@ export function UsingService(
       } else {
         const dec = CallbackLayer((ctx, cb) => {
           ctx.plugin({
-            name: `${ctx.state.id}_${key.toString()}`,
+            name: `${ctx.state.runtime.uid}_${key.toString()}`,
             using: services,
             apply: cb,
           });

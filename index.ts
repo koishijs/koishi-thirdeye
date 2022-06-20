@@ -7,3 +7,4 @@ export * from './src/plugin-operators';
 export * from './src/plugin-factory';
 export * from './src/def/interfaces';
 export * from 'schemastery-gen';
+export * from 'koishi-decorators/dist/src/def/select';

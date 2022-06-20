@@ -1,5 +1,6 @@
-import { Context, Dict, Selection } from 'koishi';
+import { Context, Dict } from 'koishi';
 import { PluginMeta } from '../register';
+import { Selection } from 'koishi-decorators';
 
 export * from 'koishi-decorators/dist/src/def/interfaces';
 

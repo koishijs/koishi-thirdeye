@@ -2,7 +2,7 @@ import { DefinePlugin } from '../src/register';
 import { RegisterSchema, SchemaProperty } from 'schemastery-gen';
 import { BasePlugin } from '../src/base-plugin';
 import { UseCommand } from 'koishi-decorators';
-import { MultiInstancePlugin } from '../src/plugin-operators/multi-plugin';
+import { MultiInstancePlugin } from '../src/plugin-operators';
 import { App, Schema } from 'koishi';
 
 class MessageConfig {

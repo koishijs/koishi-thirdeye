@@ -3,7 +3,7 @@ import { PluginClass } from '../../def';
 import { BasePlugin, PartialDeep } from '../../base-plugin';
 import { LifecycleEvents } from '../../register';
 import { ClonePlugin } from '../../utility/clone-plugin';
-import { Apply, UseEvent } from 'koishi-decorators';
+import { Apply, selectContext, UseEvent } from 'koishi-decorators';
 
 export class MappingPluginBase<
     M extends Dict<PluginClass>,
@@ -33,7 +33,7 @@ export class MappingPluginBase<
       const config = this._getPluginConfig(key);
       if (config == null) continue;
       const ctx =
-        typeof config === 'object' ? this.ctx.select(config) : this.ctx;
+        typeof config === 'object' ? selectContext(this.ctx, config) : this.ctx;
       const clonedPlugin = ClonePlugin(
         plugin,
         `${this.constructor.name}_${plugin.name}_dict_${key}`,

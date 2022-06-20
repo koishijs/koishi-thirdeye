@@ -1,5 +1,5 @@
 import { ClonePlugin } from '../utility/clone-plugin';
-import { Selection } from 'koishi';
+import { selectContext, Selection } from 'koishi-decorators';
 import { BasePlugin } from '../base-plugin';
 import {
   ClassPluginConfig,
@@ -39,7 +39,11 @@ export class MultiInstancePluginFramework<InnerPlugin extends PluginClass>
         (instance) => this.instances.push(instance),
       );
       const instanceConfig = this.config.instances[i];
-      this.ctx.select(instanceConfig).plugin(clonedInnerPlugin, instanceConfig);
+      const instanceContext =
+        typeof instanceConfig === 'object'
+          ? selectContext(this.ctx, instanceConfig)
+          : this.ctx;
+      instanceContext.plugin(clonedInnerPlugin, instanceConfig);
     }
   }
 
