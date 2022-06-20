@@ -167,3 +167,5 @@ export const MixinModel = <K extends Keys<Tables>>(
 
 export const Fork = (forkPlugin: PluginClass) =>
   Metadata.set('KoishiFork', forkPlugin);
+
+export const Reusable = (value = true) => Metadata.set('KoishiReusable', value);

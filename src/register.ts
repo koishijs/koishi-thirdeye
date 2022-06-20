@@ -23,7 +23,7 @@ export interface KoishiPluginRegistrationOptions<T = any> {
   schema?: Schema<T> | Type<T>;
   Config?: Schema<T> | Type<T>;
   using?: ServiceName[];
-  // reusable?: boolean;
+  reusable?: boolean;
 }
 
 export interface PluginMeta<T = any> {
@@ -102,7 +102,7 @@ export function DefinePlugin<T>(
       }
 
       static get reusable() {
-        return !!getFork(newClass);
+        return reflector.get('KoishiReusable', newClass);
       }
 
       __ctx: Context;

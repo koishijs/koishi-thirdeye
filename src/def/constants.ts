@@ -32,6 +32,7 @@ export interface MetadataMap {
   KoishiPredefineSchema: Schema | ClassType<any>;
   KoishiPredefineName: string;
   KoishiFork: PluginClass;
+  KoishiReusable: boolean;
 }
 
 export const ThirdEyeSym = Symbol('ThirdEyeSym');
