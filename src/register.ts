@@ -16,13 +16,14 @@ import { SchemaClass } from 'schemastery-gen';
 import _ from 'lodash';
 import { Registrar, Type } from 'koishi-decorators';
 import { PluginName, PluginSchema, UsingService } from './decorators';
+import { getFork } from './utility/get-fork';
 
 export interface KoishiPluginRegistrationOptions<T = any> {
   name?: string;
   schema?: Schema<T> | Type<T>;
   Config?: Schema<T> | Type<T>;
   using?: ServiceName[];
-  reusable?: boolean;
+  // reusable?: boolean;
 }
 
 export interface PluginMeta<T = any> {
@@ -93,16 +94,15 @@ export function DefinePlugin<T>(
 
       static get using() {
         let list = reflector.getArray(KoishiAddUsingList, newClass);
-        const fork = reflector.get('KoishiFork', newClass);
+        const fork = getFork(newClass);
         if (fork) {
-          list = [...list, ...reflector.getArray(KoishiAddUsingList, fork)];
+          list = [...list, ...fork.using];
         }
         return _.uniq(list);
       }
 
       static get reusable() {
-        const fork = reflector.get('KoishiFork', newClass);
-        return !!fork;
+        return !!getFork(newClass);
       }
 
       __ctx: Context;
@@ -287,12 +287,9 @@ export function DefinePlugin<T>(
       }
 
       _initializeFork() {
-        let fork = reflector.get('KoishiFork', this);
+        const fork = getFork(this);
         if (!fork) {
           return;
-        }
-        if (!fork[ThirdEyeSym]) {
-          fork = DefinePlugin()(fork);
         }
         this.__ctx.on('fork', (ctx, options) => {
           ctx.__parent = this;
@@ -339,8 +336,17 @@ export function DefinePlugin<T>(
     Object.defineProperty(newClass, 'name', {
       enumerable: true,
       configurable: true,
-      get: () =>
-        reflector.get('KoishiPredefineName', newClass) || originalClass.name,
+      get: () => {
+        const nameFromMeta = reflector.get('KoishiPredefineName', newClass);
+        if (nameFromMeta) {
+          return nameFromMeta;
+        }
+        const nameFromFork = getFork(newClass)?.name;
+        if (nameFromFork) {
+          return nameFromFork;
+        }
+        return originalClass.name;
+      },
     });
     newClass[ThirdEyeSym] = true;
     return newClass;
