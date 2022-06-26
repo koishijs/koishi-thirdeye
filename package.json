@@ -54,7 +54,7 @@
     "lodash": "^4.17.21",
     "minato-decorators": "^2.0.7",
     "reflect-metadata": "^0.1.13",
-    "schemastery-gen": "^3.1.13",
+    "schemastery-gen": "^3.1.14",
     "typed-reflector": "^1.0.10"
   },
   "jest": {
