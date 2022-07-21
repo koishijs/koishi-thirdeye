@@ -66,6 +66,7 @@ describe('Command', () => {
 
   it('Should infer option types', () => {
     expect(pingCommand._options.sound.type).toEqual('string');
+    expect(pangCommand._arguments[0].type).toEqual('string');
   });
 
   it('should call command', async () => {
