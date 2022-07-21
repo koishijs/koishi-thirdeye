@@ -50,7 +50,7 @@
     "lodash": "^4.17.21",
     "minato-decorators": "^2.0.8",
     "rxjs": "^7.5.6",
-    "satori-decorators": "^1.0.8"
+    "satori-decorators": "^1.0.9"
   },
   "jest": {
     "moduleFileExtensions": [
