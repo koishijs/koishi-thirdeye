@@ -1,7 +1,5 @@
-import { MixinModel, UseModel } from '../src/decorators';
+import { DefinePlugin, MixinModel, UseModel } from '../src/decorators';
 import { App } from 'koishi';
-import { BasePlugin } from '../src/base-plugin';
-import { DefinePlugin } from '../src/register';
 import {
   ChildModel,
   DefineModel,
@@ -10,6 +8,7 @@ import {
   PrimaryGenerated,
   Unique,
 } from '../src/cosmotype-exports';
+import { StarterPlugin } from '../src/registrar';
 
 declare module 'koishi' {
   interface Tables {
@@ -79,7 +78,7 @@ class Wearing {
 @MixinModel('user', { shirt: Wearing })
 @UseModel(Dress)
 @DefinePlugin()
-class MyPlugin extends BasePlugin<any> {}
+class MyPlugin extends StarterPlugin() {}
 
 describe('Test of model', () => {
   it('should register model', async () => {

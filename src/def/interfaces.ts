@@ -1,72 +1,88 @@
-import { Context, Dict } from 'koishi';
-import { PluginMeta } from '../register';
-import { Selection } from 'koishi-decorators';
+import { Argv, Command, Context, Dict, I18n } from 'koishi';
+import { CanBeObserved } from '../utility/rxjs-session';
 
-export * from 'koishi-decorators/dist/src/def/interfaces';
-
-// Command stuff
-
-export type SystemInjectFun = <T = any>(
-  obj: PluginMeta<T>,
-  cl: PluginClass,
-) => any;
-
-export type ServiceName = keyof Context | string;
-
-export interface ProvideOptions extends Context.ServiceOptions {
-  immediate?: boolean;
-}
-
-export interface ProvideDefinition extends ProvideOptions {
-  serviceName: ServiceName;
-}
-
-export type Condition<R, T = any, Ext extends any[] = []> = (
-  o: T,
-  ...ext: Ext
+type CommandReg<A extends any[] = any[], R = any> = (
+  ctx: Context,
+  command: Command,
+  ...args: A
 ) => R;
 
-export interface Instances<T> {
-  instances: T[];
+export type CommandTransformer<A extends any[] = any[]> = CommandReg<
+  A,
+  Command
+>;
+
+export interface CommandPutData {
+  ctx: Context;
+  command: Command;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  nativeType: Function;
+  view: any;
 }
 
-export type TypeFromClass<T> = T extends { new (...args: any[]): infer U }
-  ? U
-  : never;
-
-export type ParamsFromClass<T> = T extends { new (...args: infer U): any }
-  ? U
-  : never;
-
-export type PluginClass<C = any, P = any> = new (ctx: Context, config: C) => P;
-
-export type ClassPluginConfig<P extends PluginClass> = P extends PluginClass<
-  infer C
->
-  ? C
-  : never;
-
-export type ExactClassPluginConfig<P extends PluginClass> =
-  P extends PluginClass<any, { config: infer IC }> ? IC : ClassPluginConfig<P>;
-
-export type MapPluginToConfig<M extends Dict<PluginClass>> = {
-  [K in keyof M]: ClassPluginConfig<M[K]>;
-};
-
-export type MapPluginToConfigWithSelection<M extends Dict<PluginClass>> = {
-  [K in keyof M]: ClassPluginConfig<M[K]> & Selection;
-};
-
-export interface ControlTypeMap {
-  if: boolean;
-  for: Iterable<Record<string, any>>;
+export interface CommandPutRuntime extends CommandPutData {
+  args: any[];
+  argv: Argv;
 }
 
-export interface ControlType<
-  T extends keyof ControlTypeMap = keyof ControlTypeMap,
-> {
-  type: T;
-  condition: Condition<ControlTypeMap[T], any, [Record<string, any>]>;
+export type CommandPutPre<A extends any[] = any[]> = (
+  data: CommandPutData,
+  ...args: A
+) => any;
+
+export type CommandPut<A extends any[] = any[]> = (
+  data: CommandPutRuntime,
+  ...args: A
+) => any;
+
+export interface CommandConfigExtended extends Command.Config {
+  empty?: boolean;
 }
 
-export type Prop<T> = T;
+export interface CommandOptionConfigWithDescription extends Argv.OptionConfig {
+  description?: string | Dict<string>;
+}
+
+export interface CommandLocaleDef extends I18n.Store {
+  description?: string;
+  options?: Dict<string>;
+  usage?: string;
+  examples?: string;
+  messages?: I18n.Store;
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type Renderer<T = any> = (params?: T) => string;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type CRenderer = (path: string, params?: object) => string;
+
+export interface TemplateConfig {
+  name: string;
+  text: Dict<string>;
+}
+
+export interface CommandArgDef {
+  index: number;
+  decl?: Argv.Declaration;
+}
+
+export interface CommandRegisterConfig<D extends string = string> {
+  def: D;
+  desc?: string;
+  config?: CommandConfigExtended;
+  // putOptions?: CommandPut.Config[];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  paramTypes: Function[];
+}
+
+export interface CommandConfigExtended extends Command.Config {
+  empty?: boolean;
+}
+
+export interface CommandOptionConfig {
+  name: string;
+  desc: string;
+  config?: CommandOptionConfigWithDescription;
+}
+
+export type CommandReturnType = CanBeObserved<string | void>;
