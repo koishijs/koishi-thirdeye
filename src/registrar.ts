@@ -64,7 +64,7 @@ export class KoishiRegistrar extends SatoriRegistrar<Context> {
         'middleware',
         (
           { ctx },
-          fun: (session: Session, next: Next) => CanBeObserved<string>,
+          fun: (session: Session, next: Next) => CommandReturnType,
           prepend?: boolean,
         ) =>
           ctx.middleware(

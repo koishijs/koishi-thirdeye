@@ -5,7 +5,7 @@ export type CanBeObserved<T> = Awaitable<T | Observable<T>>;
 
 export async function sessionRxToPromise(
   session: Session,
-  obs: CanBeObserved<string>,
+  obs: CanBeObserved<string | void>,
 ) {
   const obsAwaited = await obs;
   if (!isObservable(obsAwaited)) {
@@ -18,7 +18,7 @@ export async function sessionRxToPromise(
         if (lastValue && session.send) {
           await session.send(lastValue);
         }
-        lastValue = value;
+        lastValue = value as string;
       },
       error: async (error) => {
         if (lastValue && session.send) {
