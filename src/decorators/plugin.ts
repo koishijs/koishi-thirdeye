@@ -22,3 +22,8 @@ export const MixinModel = <K extends Keys<Tables>>(
     const registrar = new ModelRegistrar(ctx.model);
     registrar.mixinModel(tableName, classDict);
   })();
+
+export const InjectLogger = (name?: string) =>
+  koishiRegistrar
+    .pluginDecorators()
+    .InjectSystem((obj) => obj.__ctx.logger(name || obj.constructor.name));
