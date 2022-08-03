@@ -18,7 +18,14 @@ export * from 'satori-decorators/dist/src/decorators/common';
 
 const methodDecorators = koishiRegistrar.methodDecorators();
 
-export const { UseEvent, UseBeforeEvent, UseMiddleware } = methodDecorators;
+export const {
+  UseEvent,
+  UseBeforeEvent,
+  UseMiddleware,
+  UsePreset,
+  UseFormatter,
+  UseInterval,
+} = methodDecorators;
 
 export function UseCommand<D extends string>(
   def: D,

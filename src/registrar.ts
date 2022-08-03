@@ -1,5 +1,5 @@
 import { RegisterMeta, SatoriRegistrar } from 'satori-decorators';
-import { BeforeEventMap, Command, Context, Next, Session } from 'koishi';
+import { BeforeEventMap, Command, Context, I18n, Next, Session } from 'koishi';
 import { CanBeObserved, sessionRxToPromise } from './utility/rxjs-session';
 import {
   CommandConfigExtended,
@@ -144,6 +144,29 @@ export class KoishiRegistrar extends SatoriRegistrar<Context> {
           });
           return command;
         },
+      ),
+      UseFormatter: this.decorateMethod(
+        'formatter',
+        ({ ctx }, fun: I18n.Formatter, name: string) => {
+          ctx.i18n.formatter(name, fun);
+          ctx.on('dispose', () => {
+            delete ctx.i18n._formatters[name];
+          });
+        },
+      ),
+      UsePreset: this.decorateMethod(
+        'preset',
+        ({ ctx }, fun: I18n.Renderer, name: string) => {
+          ctx.i18n.preset(name, fun);
+          ctx.on('dispose', () => {
+            delete ctx.i18n._presets[fun.name];
+          });
+        },
+      ),
+      UseInterval: this.decorateMethod(
+        'interval',
+        ({ ctx }, fun: (...args: any[]) => any, interval: number) =>
+          ctx.setInterval(fun, interval),
       ),
     };
   }
