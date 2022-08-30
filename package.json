@@ -43,7 +43,7 @@
     "rimraf": "^3.0.2",
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.6.4"
+    "typescript": "^4.8.2"
   },
   "dependencies": {
     "minato-decorators": "^2.1.0",
@@ -68,7 +68,6 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "koishi": "^4.8.7",
-    "schemastery": "^3.4.3"
+    "koishi": "^4.8.7"
   }
 }
