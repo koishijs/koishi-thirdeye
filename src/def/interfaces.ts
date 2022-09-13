@@ -1,4 +1,4 @@
-import { Argv, Command, Context, Dict, I18n } from 'koishi';
+import { Argv, Command, Context, Dict, I18n, segment } from 'koishi';
 import { CanBeObserved } from '../utility/rxjs-session';
 
 type CommandReg<A extends any[] = any[], R = any> = (
@@ -85,4 +85,4 @@ export interface CommandOptionConfig {
   config?: CommandOptionConfigWithDescription;
 }
 
-export type CommandReturnType = CanBeObserved<string | void>;
+export type CommandReturnType = CanBeObserved<string | void | segment>;

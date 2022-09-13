@@ -1,11 +1,11 @@
-import { Awaitable, Session } from 'koishi';
+import { Awaitable, Session, segment } from 'koishi';
 import { isObservable, Observable } from 'rxjs';
 
 export type CanBeObserved<T> = Awaitable<T | Observable<T>>;
 
 export async function sessionRxToPromise(
   session: Session,
-  obs: CanBeObserved<string | void>,
+  obs: CanBeObserved<string | void | segment>,
 ) {
   const obsAwaited = await obs;
   if (!isObservable(obsAwaited)) {
