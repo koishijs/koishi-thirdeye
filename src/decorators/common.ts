@@ -170,7 +170,7 @@ export const PutGuild = koishiRegistrar.decorateCommandPut(
 export const PutUserName = koishiRegistrar.decorateCommandPut(
   (data, useDatabase?: boolean) => {
     const { argv } = data;
-    if (useDatabase) {
+    if (useDatabase !== false) {
       const user = argv.session.user as User.Observed<'name'>;
       if (user?.name) {
         return user?.name;
