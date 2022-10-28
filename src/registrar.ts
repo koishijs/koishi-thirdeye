@@ -25,6 +25,8 @@ declare module 'satori-decorators' {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export class KoishiRegistrar extends SatoriRegistrar<Context> {
   decorateCommandTransformer<A extends any[]>(
     transformer: CommandTransformer<A>,
