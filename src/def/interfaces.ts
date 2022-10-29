@@ -85,4 +85,6 @@ export interface CommandOptionConfig {
   config?: CommandOptionConfigWithDescription;
 }
 
-export type CommandReturnType = CanBeObserved<string | void | segment>;
+export type CommandReturnType = CanBeObserved<
+  string | void | segment | (string | segment)[]
+>;
