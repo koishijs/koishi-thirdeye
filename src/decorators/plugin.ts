@@ -7,7 +7,9 @@ export * from 'satori-decorators/dist/src/decorators/plugin';
 export const { DefinePlugin } = koishiRegistrar.pluginDecorators();
 export const UseModel = koishiRegistrar.decorateTopLevelAction(
   (ctx, obj, ...models: ModelClassType[]) => {
-    const registrar = new ModelRegistrar(ctx.model);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const registrar = new ModelRegistrar<Tables>(ctx.model);
     models.forEach((m) => registrar.registerModel(m));
   },
 );
@@ -19,7 +21,9 @@ export const MixinModel = <K extends Keys<Tables>>(
   },
 ): ClassDecorator =>
   koishiRegistrar.decorateTopLevelAction((ctx, obj) => {
-    const registrar = new ModelRegistrar(ctx.model);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const registrar = new ModelRegistrar<Tables>(ctx.model);
     registrar.mixinModel(tableName, classDict);
   })();
 
