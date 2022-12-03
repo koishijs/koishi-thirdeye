@@ -147,21 +147,12 @@ export class KoishiRegistrar extends SatoriRegistrar<Context> {
           return command;
         },
       ),
-      UseFormatter: this.decorateMethod(
-        'formatter',
-        ({ ctx }, fun: I18n.Formatter, name: string) => {
-          ctx.i18n.formatter(name, fun);
-          ctx.on('dispose', () => {
-            delete ctx.i18n._formatters[name];
-          });
-        },
-      ),
       UsePreset: this.decorateMethod(
         'preset',
         ({ ctx }, fun: I18n.Renderer, name: string) => {
           ctx.i18n.preset(name, fun);
           ctx.on('dispose', () => {
-            delete ctx.i18n._presets[fun.name];
+            delete ctx.i18n._presets[name];
           });
         },
       ),

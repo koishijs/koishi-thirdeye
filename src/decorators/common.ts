@@ -23,7 +23,6 @@ export const {
   UseBeforeEvent,
   UseMiddleware,
   UsePreset,
-  UseFormatter,
   UseInterval,
 } = methodDecorators;
 
@@ -64,10 +63,14 @@ export const CommandDescription = koishiRegistrar.decorateCommandTransformer(
 export const CommandAlias = koishiRegistrar.decorateCommandTransformer(
   (ctx, cmd, ...names: string[]) => cmd.alias(...names),
 );
+
 export const CommandShortcut = koishiRegistrar.decorateCommandTransformer(
-  (ctx, cmd, name: string | RegExp, config: Command.Shortcut = {}) =>
-    cmd.shortcut(name, config),
+  (ctx, cmd, pattern: string | RegExp, config: Command.Shortcut) =>
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    cmd.shortcut(pattern, config),
 );
+
 export const CommandUsage = koishiRegistrar.decorateCommandTransformer(
   (ctx, cmd, text: Command.Usage) => cmd.usage(text),
 );
