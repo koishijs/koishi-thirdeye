@@ -69,6 +69,6 @@
     "testEnvironment": "node"
   },
   "peerDependencies": {
-    "koishi": "^4.10.4"
+    "koishi": "^4.10.6"
   }
 }
