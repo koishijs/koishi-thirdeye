@@ -118,9 +118,10 @@ export class ReplySession<
     const prom = new Promise<string>((resolve) => {
       const prompt: Prompt = {
         resolver: resolve,
-        timeout: setTimeout(() => {
-          resolver.resolvePrompt(identifier, undefined);
-        }, timeout),
+        timeout: setTimeout(
+          () => resolver.resolvePrompt(identifier, undefined),
+          timeout,
+        ),
         session: this,
         callback,
       };
@@ -139,7 +140,7 @@ class PromptResolver extends StarterPlugin() {
   addPrompt(identifier: string, prompt: Prompt) {
     const oldPrompt = this.prompts.get(identifier);
     if (oldPrompt) {
-      this.resolvePrompt(identifier, undefined);
+      this.resolvePrompt(identifier, undefined).then();
     }
     this.prompts.set(identifier, prompt);
   }
@@ -151,7 +152,7 @@ class PromptResolver extends StarterPlugin() {
       return next();
     }
     const identifier = session.getIdentifier();
-    const prompt = this.resolvePrompt(identifier, session);
+    const prompt = await this.resolvePrompt(identifier, session);
     if (!prompt) {
       return next();
     }
@@ -159,10 +160,10 @@ class PromptResolver extends StarterPlugin() {
     return;
   }
 
-  resolvePrompt(identifier: string, session: ReplySession) {
+  async resolvePrompt(identifier: string, session: ReplySession) {
     const prompt = this.prompts.get(identifier);
     if (prompt) {
-      prompt.resolver(prompt.callback(session));
+      prompt.resolver(session ? await prompt.callback(session) : undefined);
       clearTimeout(prompt.timeout);
       this.prompts.delete(identifier);
       return prompt;
