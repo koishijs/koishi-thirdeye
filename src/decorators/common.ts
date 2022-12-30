@@ -24,6 +24,7 @@ export const {
   UseMiddleware,
   UsePreset,
   UseInterval,
+  UseComponent,
 } = methodDecorators;
 
 export function UseCommand<D extends string>(

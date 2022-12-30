@@ -1,5 +1,13 @@
 import { RegisterMeta, SatoriRegistrar } from 'satori-decorators';
-import { BeforeEventMap, Command, Context, I18n, Next, Session } from 'koishi';
+import {
+  BeforeEventMap,
+  Command,
+  Context,
+  I18n,
+  Next,
+  Session,
+  Component,
+} from 'koishi';
 import { CanBeObserved, sessionRxToPromise } from './utility/rxjs-session';
 import {
   CommandConfigExtended,
@@ -160,6 +168,15 @@ export class KoishiRegistrar extends SatoriRegistrar<Context> {
         'interval',
         ({ ctx }, fun: (...args: any[]) => any, interval: number) =>
           ctx.setInterval(fun, interval),
+      ),
+      UseComponent: this.decorateMethod(
+        'component',
+        (
+          { ctx },
+          fun: Component,
+          name: string,
+          options: Component.Options = {},
+        ) => ctx.component(name, fun, options),
       ),
     };
   }
