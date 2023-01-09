@@ -12,11 +12,23 @@ import {
 } from '../utility/utility';
 import { Argv, Command, Dict, FieldCollector, Session, User } from 'koishi';
 import { applyNativeTypeToArg } from '../utility/native-type-mapping';
-import { TypedMethodDecorator } from 'satori-decorators';
+import { TypedMethodDecorator } from 'cordis-decorators';
 
-export * from 'satori-decorators/dist/src/decorators/common';
+export * from 'cordis-decorators/dist/src/decorators/common';
 
 const methodDecorators = koishiRegistrar.methodDecorators();
+
+export const {
+  OnAnywhere,
+  OnNowhere,
+  OnUser,
+  OnSelf,
+  OnGuild,
+  OnChannel,
+  OnPlatform,
+  OnPrivate,
+  OnSelection,
+} = koishiRegistrar.selectorDecorators();
 
 export const {
   UseEvent,

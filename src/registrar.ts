@@ -1,4 +1,4 @@
-import { RegisterMeta, SatoriRegistrar } from 'satori-decorators';
+import { RegisterMeta, Registrar } from 'cordis-decorators';
 import {
   BeforeEventMap,
   Command,
@@ -16,10 +16,26 @@ import {
   CommandReturnType,
   CommandTransformer,
 } from './def';
+import { IncomingMessage } from 'http';
+import {
+  DefaultContext,
+  DefaultState,
+  ParameterizedContext,
+  Next as KoaNext,
+} from 'koa';
+import { RouterParamContext } from '@koa/router';
+import WebSocket from 'ws';
+import { selectContext, Selection } from './utility/select-context';
+
+export type KoaContext = ParameterizedContext<
+  DefaultState,
+  DefaultContext & RouterParamContext<DefaultState, DefaultContext>,
+  any
+>;
 
 type PutMeta = RegisterMeta<CommandPut, { pre?: RegisterMeta<CommandPutPre> }>;
 
-declare module 'satori-decorators' {
+declare module 'cordis-decorators' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Registrar {
     interface MetadataMap {
@@ -35,7 +51,7 @@ declare module 'satori-decorators' {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export class KoishiRegistrar extends SatoriRegistrar<Context> {
+export class KoishiRegistrar extends Registrar<Context> {
   decorateCommandTransformer<A extends any[]>(
     transformer: CommandTransformer<A>,
   ) {
@@ -70,6 +86,34 @@ export class KoishiRegistrar extends SatoriRegistrar<Context> {
   override methodDecorators() {
     return {
       ...super.methodDecorators(),
+      RouterMethod: this.decorateMethod(
+        'route',
+        (
+          { ctx },
+          fun: (ctx: KoaContext, Next: KoaNext) => Promise<any>,
+          method:
+            | 'get'
+            | 'post'
+            | 'put'
+            | 'delete'
+            | 'patch'
+            | 'options'
+            | 'head'
+            | 'all',
+          path: string,
+        ) => {
+          const _path = path.startsWith('/') ? path : `/${path}`;
+          return ctx.router[method](_path, (koaCtx, next) => fun(koaCtx, next));
+        },
+      ),
+      Ws: this.decorateMethod(
+        'ws',
+        (
+          { ctx },
+          action: (socket: WebSocket, request: IncomingMessage) => any,
+          path: string,
+        ) => ctx.router.ws(path.startsWith('/') ? path : `/${path}`, action),
+      ),
       UseMiddleware: this.decorateMethod(
         'middleware',
         (
@@ -177,6 +221,34 @@ export class KoishiRegistrar extends SatoriRegistrar<Context> {
           name: string,
           options: Component.Options = {},
         ) => ctx.component(name, fun, options),
+      ),
+    };
+  }
+
+  selectorDecorators() {
+    return {
+      OnAnywhere: this.decorateTransformer((ctx) => ctx.any()),
+      OnNowhere: this.decorateTransformer((ctx) => ctx.never()),
+      OnUser: this.decorateTransformer((ctx, ...values: string[]) =>
+        ctx.user(...values),
+      ),
+      OnSelf: this.decorateTransformer((ctx, ...values: string[]) =>
+        ctx.self(...values),
+      ),
+      OnGuild: this.decorateTransformer((ctx, ...values: string[]) =>
+        ctx.guild(...values),
+      ),
+      OnChannel: this.decorateTransformer((ctx, ...values: string[]) =>
+        ctx.channel(...values),
+      ),
+      OnPlatform: this.decorateTransformer((ctx, ...values: string[]) =>
+        ctx.platform(...values),
+      ),
+      OnPrivate: this.decorateTransformer((ctx, ...values: string[]) =>
+        ctx.private(...values),
+      ),
+      OnSelection: this.decorateTransformer((ctx, selection: Selection) =>
+        selectContext(ctx, selection),
       ),
     };
   }

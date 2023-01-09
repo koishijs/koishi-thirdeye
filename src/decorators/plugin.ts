@@ -2,7 +2,7 @@ import { koishiRegistrar } from '../registrar';
 import { ModelClassType, ModelRegistrar } from 'minato-decorators';
 import { Flatten, Keys, Tables } from 'koishi';
 
-export * from 'satori-decorators/dist/src/decorators/plugin';
+export * from 'cordis-decorators/dist/src/decorators/plugin';
 
 export const { DefinePlugin } = koishiRegistrar.pluginDecorators();
 export const UseModel = koishiRegistrar.decorateTopLevelAction(
