@@ -38,7 +38,7 @@ export class ReplySession<
     this.midResolver = resolve;
   });
 
-  async process() {
+  async process(timeout = 0) {
     if (!this.app.lifecycle.isActive) return;
     const events: string[] = [this.type];
     if (this.subtype) {
@@ -47,17 +47,24 @@ export class ReplySession<
         events.unshift(events[0] + '/' + this.subsubtype);
       }
     }
+    this.inRequest = true;
     this.emitPromise = Promise.all(
       events.map((event) => this.app.root.parallel(this, event as any, this)),
     );
-    return this.waitForPattern();
+    return this.waitForPattern(timeout);
   }
 
-  async waitForPattern() {
-    await Promise.race([
+  inRequest = false;
+
+  async waitForPattern(timeout = 0) {
+    const promises = [
       this.emitPromise.then(() => this.midResolve(true)),
       this.midPromise,
-    ]);
+    ];
+    if (timeout) {
+      promises.push(new Promise((resolve) => setTimeout(resolve, timeout)));
+    }
+    await Promise.race(promises);
     return this.gatherReplyMessages();
   }
 
@@ -80,6 +87,9 @@ export class ReplySession<
   }
 
   async send(content: Fragment, options: SendOptions = {}) {
+    if (!this.inRequest) {
+      return super.send(content, options);
+    }
     if (!content) return;
     options.session = this;
     const children = await this.transform(segment.normalize(content));
@@ -96,13 +106,17 @@ export class ReplySession<
     return [messageId];
   }
 
-  gatherReplyMessages() {
+  private gatherReplyMessages() {
     const result = this.replyMessages.filter((m) => !!m);
     this.replyMessages = [];
+    this.inRequest = false;
     return result;
   }
 
   prompt(...args: any[]) {
+    if (!this.inRequest) {
+      return super.prompt(...args);
+    }
     if (!this.app.__prompt_resolver__) {
       this.app.root.plugin(PromptResolver);
     }
@@ -163,6 +177,7 @@ class PromptResolver extends StarterPlugin() {
   async resolvePrompt(identifier: string, session: ReplySession) {
     const prompt = this.prompts.get(identifier);
     if (prompt) {
+      prompt.session.inRequest = true;
       prompt.resolver(session ? await prompt.callback(session) : undefined);
       clearTimeout(prompt.timeout);
       this.prompts.delete(identifier);
