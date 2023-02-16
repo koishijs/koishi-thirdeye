@@ -58,7 +58,13 @@ export class ReplySession<
 
   async waitForPattern(timeout = 0) {
     const promises = [
-      this.emitPromise.then(() => this.midResolve(true)),
+      new Promise<void>(async (resolve) => {
+        try {
+          await this.emitPromise;
+        } catch (e) {}
+        this.midResolve(true);
+        resolve();
+      }),
       this.midPromise,
     ];
     if (timeout) {
