@@ -7,6 +7,7 @@ import {
   Next,
   Session,
   Component,
+  Filter,
 } from 'koishi';
 import { CanBeObserved, sessionRxToPromise } from './utility/rxjs-session';
 import {
@@ -249,6 +250,15 @@ export class KoishiRegistrar extends Registrar<Context> {
       ),
       OnSelection: this.decorateTransformer((ctx, selection: Selection) =>
         selectContext(ctx, selection),
+      ),
+      OnUnion: this.decorateTransformer((ctx, arg: Filter | Context) =>
+        ctx.union(arg),
+      ),
+      OnIntersect: this.decorateTransformer((ctx, arg: Filter | Context) =>
+        ctx.intersect(arg),
+      ),
+      OnExclude: this.decorateTransformer((ctx, arg: Filter | Context) =>
+        ctx.exclude(arg),
       ),
     };
   }

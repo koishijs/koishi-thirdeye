@@ -760,6 +760,9 @@ export default class MyPlugin extends StarterPlugin(Config) {
 - `@OnPlatform(value)` 等价于 `ctx.platform(value)`。
 - `@OnPrivate(value)` 等价于 `ctx.private(value)`。
 - `@OnSelection(value)` 等价于 `ctx.select(value)`。
+- `@OnUnion(value)` 等价于 `ctx.union(value)`。
+- `@OnIntersect(value)` 等价于 `ctx.intersect(value)`。
+- `@OnExclude(value)` 等价于 `ctx.exclude(value)`。
 
 ## 插值定义
 
@@ -1158,6 +1161,27 @@ export class MyPluginBar extends FooPlugin(BarConfig) {
 ### 内置模板
 
 koishi-thirdeye 也提供了一些开箱即用的插件模板，这些模板可以帮助您简单地对各个子插件进行有效的组织。事实上，上面的 [`StarterPlugin`](#插件基类) 就是内置模板的一种。
+
+#### HttpClientPlugin
+
+HttpClientPlugin 是一个内置的模板，里面提供了一个 `http` 成员变量，可以用于发送 HTTP 请求。该模板内置了相关 http 的配置以让插件的用户定义 `this.http` 相关的行为。
+
+```ts
+@RegisterSchema()
+export class Config {
+  @SchemaProperty()
+  foo: string
+  // 将被增加 headers, proxyAgent, timeout 等配置
+}
+
+@DefinePlugin()
+export class MyPlugin extends HttpClientPlugin(Config) {
+  @UseCommand('foo')
+  onFoo() {
+    return this.http.get('https://example.com')
+  }
+}
+```
 
 #### 组合插件
 

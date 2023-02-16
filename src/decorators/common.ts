@@ -28,6 +28,9 @@ export const {
   OnPlatform,
   OnPrivate,
   OnSelection,
+  OnUnion,
+  OnIntersect,
+  OnExclude,
 } = koishiRegistrar.selectorDecorators();
 
 export const {
