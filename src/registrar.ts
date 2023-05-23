@@ -203,7 +203,6 @@ export class KoishiRegistrar extends Registrar<Context> {
       UsePreset: this.decorateMethod(
         'preset',
         ({ ctx }, fun: I18n.Renderer, name: string) => {
-          ctx.i18n.preset(name, fun);
           ctx.on('dispose', () => {
             delete ctx.i18n._presets[name];
           });

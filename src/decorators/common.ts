@@ -37,7 +37,6 @@ export const {
   UseEvent,
   UseBeforeEvent,
   UseMiddleware,
-  UsePreset,
   UseInterval,
   UseComponent,
 } = methodDecorators;
